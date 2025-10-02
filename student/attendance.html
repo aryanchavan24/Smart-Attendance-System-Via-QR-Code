@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Attendance</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .sidebar {
+            transition: all 0.3s ease;
+        }
+    </style>
+</head>
+<body class="bg-neutral-50 font-sans">
+    <div class="min-h-screen">
+        <div class="flex">
+            <div class="sidebar w-64 bg-sky-800 text-white min-h-screen p-4">
+                <div class="flex items-center mb-8">
+                    <div class="w-10 h-10 rounded-full bg-sky-600 flex items-center justify-center mr-3">
+                        <i data-feather="user"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-medium">John Doe</h3>
+                        <p class="text-xs text-sky-200">Student</p>
+                    </div>
+                </div>
+                <nav>
+                    <a href="student.html" class="flex items-center py-2 px-3 rounded-lg hover:bg-sky-700 mb-2">
+                        <i data-feather="home" class="mr-3"></i> Dashboard
+                    </a>
+                    <a href="attendance.html" class="flex items-center py-2 px-3 rounded-lg bg-sky-700 mb-2">
+                        <i data-feather="calendar" class="mr-3"></i> Attendance
+                    </a>
+                    <a href="reports.html" class="flex items-center py-2 px-3 rounded-lg hover:bg-sky-700 mb-2">
+                        <i data-feather="bar-chart-2" class="mr-3"></i> Reports
+                    </a>
+                    <a href="profile.html" class="flex items-center py-2 px-3 rounded-lg hover:bg-sky-700 mb-2">
+                        <i data-feather="user" class="mr-3"></i> Profile & QR Code
+                    </a>
+                    <a href="settings.html" class="flex items-center py-2 px-3 rounded-lg hover:bg-sky-700 mb-2">
+                        <i data-feather="settings" class="mr-3"></i> Settings
+                    </a>
+                </nav>
+            </div>
+
+            <div class="flex-1 p-8">
+                <div class="flex justify-between items-center mb-8">
+                    <h2 class="text-2xl font-bold text-neutral-800">Attendance</h2>
+                    <button class="bg-sky-600 text-white px-4 py-2 rounded-lg hover:bg-sky-700 transition duration-200 flex items-center" onclick="window.location.href='index.html'">
+                        <i data-feather="log-out" class="mr-2"></i> Logout
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <div class="bg-white rounded-xl shadow p-6 text-center">
+                        <div class="w-24 h-24 mx-auto rounded-full bg-blue-100 flex items-center justify-center mb-3">
+                            <span class="text-3xl font-bold text-blue-600">82%</span>
+                        </div>
+                        <p class="text-neutral-600 font-medium">Overall Attendance</p>
+                    </div>
+                    <div class="bg-white rounded-xl shadow p-6 text-center">
+                        <div class="w-24 h-24 mx-auto rounded-full bg-green-100 flex items-center justify-center mb-3">
+                            <span class="text-3xl font-bold text-green-600">55</span>
+                        </div>
+                        <p class="text-neutral-600 font-medium">Classes Attended</p>
+                    </div>
+                    <div class="bg-white rounded-xl shadow p-6 text-center">
+                        <div class="w-24 h-24 mx-auto rounded-full bg-red-100 flex items-center justify-center mb-3">
+                            <span class="text-3xl font-bold text-red-600">12</span>
+                        </div>
+                        <p class="text-neutral-600 font-medium">Classes Missed</p>
+                    </div>
+                    <div class="bg-white rounded-xl shadow p-6 text-center">
+                        <div class="w-24 h-24 mx-auto rounded-full bg-yellow-100 flex items-center justify-center mb-3">
+                            <span class="text-xl font-bold text-yellow-600">4 Classes</span>
+                        </div>
+                        <p class="text-neutral-600 font-medium">To reach 75%</p>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow p-6 mb-8">
+                    <h3 class="text-xl font-semibold mb-4">Course-wise Attendance Breakdown</h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left table-auto">
+                            <thead>
+                                <tr class="bg-neutral-100 text-neutral-600">
+                                    <th class="p-3 font-semibold">Course Name</th>
+                                    <th class="p-3 font-semibold">Attended</th>
+                                    <th class="p-3 font-semibold">Total Classes</th>
+                                    <th class="p-3 font-semibold">Percentage</th>
+                                    <th class="p-3 font-semibold">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="border-b border-neutral-200">
+                                    <td class="p-3">Data Structures & Algorithms</td>
+                                    <td class="p-3">25</td>
+                                    <td class="p-3">30</td>
+                                    <td class="p-3">83.3%</td>
+                                    <td class="p-3"><span class="text-green-600 font-semibold">Good</span></td>
+                                </tr>
+                                <tr class="border-b border-neutral-200 bg-neutral-50">
+                                    <td class="p-3">Operating Systems</td>
+                                    <td class="p-3">18</td>
+                                    <td class="p-3">30</td>
+                                    <td class="p-3">60.0%</td>
+                                    <td class="p-3"><span class="text-red-600 font-semibold">Low</span></td>
+                                </tr>
+                                <tr class="border-b border-neutral-200">
+                                    <td class="p-3">Software Engineering</td>
+                                    <td class="p-3">20</td>
+                                    <td class="p-3">25</td>
+                                    <td class="p-3">80.0%</td>
+                                    <td class="p-3"><span class="text-green-600 font-semibold">Good</span></td>
+                                </tr>
+                                <tr class="bg-neutral-50">
+                                    <td class="p-3">Web Development Lab</td>
+                                    <td class="p-3">15</td>
+                                    <td class="p-3">20</td>
+                                    <td class="p-3">75.0%</td>
+                                    <td class="p-3"><span class="text-green-600 font-semibold">Satisfactory</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow p-6">
+                    <h3 class="text-xl font-semibold mb-4">Recent Attendance Activity</h3>
+                    <div class="flex flex-col md:flex-row justify-between items-center mb-4 space-y-4 md:space-y-0 md:space-x-4">
+                        <div class="relative w-full md:w-1/2">
+                            <input type="text" placeholder="Search by course..." class="w-full pl-10 pr-4 py-2 rounded-lg border border-neutral-300 focus:outline-none focus:ring-2 focus:ring-sky-500">
+                            <i data-feather="search" class="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-500"></i>
+                        </div>
+                        <select class="w-full md:w-auto px-4 py-2 rounded-lg border border-neutral-300 focus:outline-none focus:ring-2 focus:ring-sky-500">
+                            <option>Filter by Date (Latest)</option>
+                            <option>Filter by Date (Oldest)</option>
+                            <option>Filter by Course (A-Z)</option>
+                            <option>Filter by Status</option>
+                        </select>
+                    </div>
+
+                    <div class="space-y-3">
+                        <div class="p-4 rounded-lg border border-neutral-200 flex items-center justify-between">
+                            <div class="flex items-center">
+                                <div class="w-10 h-10 rounded-full bg-sky-100 flex-shrink-0 flex items-center justify-center mr-4">
+                                    <i data-feather="calendar" class="w-5 h-5 text-sky-600"></i>
+                                </div>
+                                <div>
+                                    <p class="font-medium">Data Structures & Algorithms</p>
+                                    <p class="text-sm text-neutral-500">October 2, 2025 | 10:00 AM</p>
+                                </div>
+                            </div>
+                            <span class="text-green-600 font-semibold flex items-center">
+                                <i data-feather="check-circle" class="w-4 h-4 mr-1"></i> Present
+                            </span>
+                        </div>
+                        <div class="p-4 rounded-lg border border-neutral-200 flex items-center justify-between bg-neutral-50">
+                            <div class="flex items-center">
+                                <div class="w-10 h-10 rounded-full bg-sky-100 flex-shrink-0 flex items-center justify-center mr-4">
+                                    <i data-feather="calendar" class="w-5 h-5 text-sky-600"></i>
+                                </div>
+                                <div>
+                                    <p class="font-medium">Web Development Lab</p>
+                                    <p class="text-sm text-neutral-500">September 29, 2025 | 01:00 PM</p>
+                                </div>
+                            </div>
+                            <span class="text-red-600 font-semibold flex items-center">
+                                <i data-feather="x-circle" class="w-4 h-4 mr-1"></i> Absent
+                            </span>
+                        </div>
+                        <div class="p-4 rounded-lg border border-neutral-200 flex items-center justify-between">
+                            <div class="flex items-center">
+                                <div class="w-10 h-10 rounded-full bg-sky-100 flex-shrink-0 flex items-center justify-center mr-4">
+                                    <i data-feather="calendar" class="w-5 h-5 text-sky-600"></i>
+                                </div>
+                                <div>
+                                    <p class="font-medium">Operating Systems</p>
+                                    <p class="text-sm text-neutral-500">September 28, 2025 | 09:00 AM</p>
+                                </div>
+                            </div>
+                            <span class="text-green-600 font-semibold flex items-center">
+                                <i data-feather="check-circle" class="w-4 h-4 mr-1"></i> Present
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        feather.replace();
+    </script>
+</body>
+<div id="logout-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-xl shadow-2xl p-6 w-full max-w-sm">
+        <h3 class="text-xl font-bold text-neutral-800 mb-4">Confirm Logout</h3>
+        <p class="text-neutral-600 mb-6">Are you sure you want to log out of your SmartQR Attendance account?</p>
+        <div class="flex justify-end space-x-3">
+            <button onclick="closeModal('logout-modal')" class="bg-neutral-200 text-neutral-800 px-4 py-2 rounded-lg hover:bg-neutral-300 transition duration-200">
+                Cancel
+            </button>
+            <button onclick="confirmLogout()" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition duration-200 flex items-center">
+                <i data-feather="log-out" class="w-4 h-4 mr-1 inline-block"></i> Yes, Logout
+            </button>
+        </div>
+    </div>
+</div>
+</html>

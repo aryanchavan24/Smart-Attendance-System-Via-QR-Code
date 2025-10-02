@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports | Teacher Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <style>
+        .sidebar {
+            transition: all 0.3s ease;
+        }
+    </style>
+</head>
+<body class="bg-neutral-50 font-sans">
+    <div class="min-h-screen">
+        <div class="flex">
+            <div class="sidebar w-64 bg-sky-800 text-white min-h-screen p-4">
+                <div class="flex items-center mb-8">
+                    <div class="w-10 h-10 rounded-full bg-sky-600 flex items-center justify-center mr-3">
+                        <i data-feather="user"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-medium">Prof. Smith</h3>
+                        <p class="text-xs text-sky-200">Teacher</p>
+                    </div>
+                </div>
+                <nav>
+                    <a href="teacher.html" class="flex items-center py-2 px-3 rounded-lg hover:bg-sky-700 mb-2">
+                        <i data-feather="home" class="mr-3"></i> Dashboard
+                    </a>
+                    <a href="teacher-scanner.html" class="flex items-center py-2 px-3 rounded-lg hover:bg-sky-700 mb-2">
+                        <i data-feather="maximize-2" class="mr-3"></i> QR Scanner
+                    </a>
+                    <a href="teacher-timetable.html" class="flex items-center py-2 px-3 rounded-lg hover:bg-sky-700 mb-2">
+                        <i data-feather="calendar" class="mr-3"></i> Timetable
+                    </a>
+                    <a href="teacher-classes.html" class="flex items-center py-2 px-3 rounded-lg hover:bg-sky-700 mb-2">
+                        <i data-feather="users" class="mr-3"></i> My Classes
+                    </a>
+                    <a href="teacher-reports.html" class="flex items-center py-2 px-3 rounded-lg bg-sky-700 mb-2">
+                        <i data-feather="bar-chart-2" class="mr-3"></i> Reports
+                    </a>
+                    <a href="teacher-notifications.html" class="flex items-center py-2 px-3 rounded-lg hover:bg-sky-700 mb-2">
+                        <i data-feather="mail" class="mr-3"></i> Notifications
+                    </a>
+                </nav>
+            </div>
+            
+            <div class="flex-1 p-8">
+                <div class="flex justify-between items-center mb-8">
+                    <h2 class="text-2xl font-bold text-neutral-800">Reports</h2>
+                    <button class="bg-sky-600 text-white px-4 py-2 rounded-lg hover:bg-sky-700 transition duration-200 flex items-center" onclick="showLogoutModal()">
+                        <i data-feather="log-out" class="mr-2"></i> Logout
+                    </button>
+                </div>
+
+                <div class="bg-white rounded-xl shadow p-6 mb-8">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-semibold">Low Attendance Students</h3>
+                        <div class="flex space-x-2">
+                             <select id="low-attendance-class-select" onchange="updateLowAttendanceList()" class="px-3 py-1 rounded-lg border border-neutral-300 focus:outline-none focus:ring-2 focus:ring-sky-500">
+                                <option value="all">All Classes</option>
+                                <option value="Data Structures">Data Structures</option>
+                                <option value="Algorithms">Algorithms</option>
+                                <option value="Database Systems">Database Systems</option>
+                            </select>
+                            <button onclick="alert('Notifying all low attendance students...');" class="bg-sky-600 text-white px-3 py-1 rounded-lg hover:bg-sky-700 transition duration-200 flex items-center text-sm">
+                                <i data-feather="mail" class="mr-1 w-4 h-4"></i> Notify All
+                            </button>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-neutral-200">
+                            <thead class="bg-red-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">Student Name</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">Attendance %</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">Class</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="low-attendance-body" class="bg-white divide-y divide-neutral-200">
+                                </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="text-center">
+                    <button onclick="exportReport()" class="bg-sky-600 text-white px-4 py-2 rounded-lg hover:bg-sky-700 transition duration-200 flex items-center justify-center mx-auto">
+                        <i data-feather="download" class="mr-2"></i> Export Detailed Report
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="logout-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-xl shadow-2xl p-6 w-full max-w-sm">
+            <h3 class="text-xl font-bold text-neutral-800 mb-4">Confirm Logout</h3>
+            <p class="text-neutral-600 mb-6">Are you sure you want to log out of your SmartQR Attendance account?</p>
+            <div class="flex justify-end space-x-3">
+                <button onclick="closeModal('logout-modal')" class="bg-neutral-200 text-neutral-800 px-4 py-2 rounded-lg hover:bg-neutral-300 transition duration-200">
+                    Cancel
+                </button>
+                <button onclick="confirmLogout()" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition duration-200 flex items-center">
+                    <i data-feather="log-out" class="w-4 h-4 mr-1 inline-block"></i> Yes, Logout
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        feather.replace();
+
+        function showLogoutModal() {
+            document.getElementById('logout-modal').classList.remove('hidden');
+            feather.replace();
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.add('hidden');
+        }
+
+        function confirmLogout() {
+            window.location.href = 'index.html';
+        }
+
+        // Dummy data for the low attendance table
+        const attendanceData = {
+            'Data Structures': {
+                studentBreakdown: [
+                    { name: 'Michael Brown', attendance: 62, email: 'michael.b@college.ac.in', class: 'Data Structures' },
+                    { name: 'Sarah Wilson', attendance: 68, email: 'sarah.w@college.ac.in', class: 'Data Structures' }
+                ]
+            },
+            'Algorithms': {
+                studentBreakdown: [
+                     { name: 'David Miller', attendance: 71, email: 'david.m@college.ac.in', class: 'Algorithms' }
+                ]
+            },
+            'Database Systems': {
+                studentBreakdown: []
+            }
+        };
+
+        function updateLowAttendanceList() {
+            const className = document.getElementById('low-attendance-class-select').value;
+            const tableBody = document.getElementById('low-attendance-body');
+            tableBody.innerHTML = '';
+            
+            let studentsToDisplay = [];
+            if (className === 'all') {
+                for (const key in attendanceData) {
+                    studentsToDisplay = studentsToDisplay.concat(attendanceData[key].studentBreakdown);
+                }
+            } else {
+                studentsToDisplay = attendanceData[className].studentBreakdown;
+            }
+
+            if (studentsToDisplay.length > 0) {
+                studentsToDisplay.forEach(student => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-neutral-900">${student.name}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-neutral-500">${student.attendance}%</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-neutral-500">${student.class}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-neutral-500">
+                            <button onclick="alert('Sending a warning email to ${student.name} at ${student.email}');" class="bg-red-600 text-white px-3 py-1 rounded-lg hover:bg-red-700 transition duration-200 text-xs">
+                                <i data-feather="mail" class="mr-1 w-3 h-3"></i> Warn Student
+                            </button>
+                        </td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            } else {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="4" class="px-6 py-4 text-center text-neutral-500">No students with low attendance.</td>
+                    </tr>
+                `;
+            }
+
+            feather.replace();
+        }
+
+        // Function to export the table data to a CSV file
+        function exportReport() {
+            const table = document.getElementById('low-attendance-body');
+            const rows = table.querySelectorAll('tr');
+            let csvContent = "Student Name,Attendance %,Class,Actions\n";
+            
+            rows.forEach(row => {
+                const rowData = [];
+                row.querySelectorAll('td').forEach((cell, index) => {
+                    // Skip the last cell which contains action buttons
+                    if (index < 3) {
+                        rowData.push(`"${cell.textContent.trim()}"`);
+                    }
+                });
+                if (rowData.length > 0) {
+                    csvContent += rowData.join(',') + '\n';
+                }
+            });
+
+            // Create a Blob and URL to download the file
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.setAttribute('href', url);
+            link.setAttribute('download', 'low_attendance_report.csv');
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            alert("Report downloaded successfully!");
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            updateLowAttendanceList();
+        });
+    </script>
+</body>
+</html>

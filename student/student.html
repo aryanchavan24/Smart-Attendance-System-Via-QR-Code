@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .sidebar {
+            transition: all 0.3s ease;
+        }
+    </style>
+</head>
+<body class="bg-neutral-50 font-sans">
+    <div class="min-h-screen">
+        <div class="flex">
+            <div class="sidebar w-64 bg-sky-800 text-white min-h-screen p-4">
+                <div class="flex items-center mb-8">
+                    <div class="w-10 h-10 rounded-full bg-sky-600 flex items-center justify-center mr-3">
+                        <i data-feather="user"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-medium">John Doe</h3>
+                        <p class="text-xs text-sky-200">Student</p>
+                    </div>
+                </div>
+                <nav>
+                    <a href="student.html" class="flex items-center py-2 px-3 rounded-lg bg-sky-700 mb-2">
+                        <i data-feather="home" class="mr-3"></i> Dashboard
+                    </a>
+                    <a href="attendance.html" class="flex items-center py-2 px-3 rounded-lg hover:bg-sky-700 mb-2">
+                        <i data-feather="calendar" class="mr-3"></i> Attendance
+                    </a>
+                    <a href="reports.html" class="flex items-center py-2 px-3 rounded-lg hover:bg-sky-700 mb-2">
+                        <i data-feather="bar-chart-2" class="mr-3"></i> Reports
+                    </a>
+                    <a href="profile.html" class="flex items-center py-2 px-3 rounded-lg hover:bg-sky-700 mb-2">
+                        <i data-feather="user" class="mr-3"></i> Profile & QR Code
+                    </a>
+                    <a href="settings.html" class="flex items-center py-2 px-3 rounded-lg hover:bg-sky-700 mb-2">
+                        <i data-feather="settings" class="mr-3"></i> Settings
+                    </a>
+                </nav>
+            </div>
+            
+            <div class="flex-1 p-8">
+                <div class="flex justify-between items-center mb-8">
+                    <h2 class="text-2xl font-bold text-neutral-800">Student Dashboard</h2>
+                    <button class="bg-sky-600 text-white px-4 py-2 rounded-lg hover:bg-sky-700 transition duration-200 flex items-center" onclick="showLogoutModal()">
+                        <i data-feather="log-out" class="mr-2"></i> Logout
+                    </button>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <div class="bg-white rounded-xl shadow p-6">
+                        <div class="flex justify-between">
+                            <div>
+                                <p class="text-neutral-500">Today's Status</p>
+                                <h3 class="text-2xl font-bold mt-2">Present</h3>
+                            </div>
+                            <div class="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center">
+                                <i data-feather="check" class="text-green-600"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-xl shadow p-6">
+                        <div class="flex justify-between">
+                            <div>
+                                <p class="text-neutral-500">Monthly Attendance</p>
+                                <h3 class="text-2xl font-bold mt-2">82%</h3>
+                            </div>
+                            <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center">
+                                <i data-feather="trending-up" class="text-blue-600"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-xl shadow p-6">
+                        <div class="flex justify-between">
+                            <div>
+                                <p class="text-neutral-500">Classes to 75%</p>
+                                <h3 class="text-2xl font-bold mt-2">4</h3>
+                            </div>
+                            <div class="w-12 h-12 rounded-full bg-yellow-100 flex items-center justify-center">
+                                <i data-feather="target" class="text-yellow-600"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow p-6 mb-8">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-lg font-semibold">Attendance Overview</h3>
+                        <select class="px-3 py-1 rounded-lg border border-neutral-300 focus:outline-none focus:ring-2 focus:ring-sky-500">
+                            <option>This Month</option>
+                            <option>Last Month</option>
+                            <option>This Semester</option>
+                        </select>
+                    </div>
+                    <canvas id="attendanceChart" height="300"></canvas>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-white rounded-xl shadow p-6">
+                        <h3 class="text-lg font-semibold mb-4">Today's Timetable</h3>
+                        <div class="space-y-4">
+                            <div class="bg-indigo-50 p-4 rounded-lg border border-indigo-200">
+                                <div class="flex items-center mb-2">
+                                    <i data-feather="book-open" class="w-5 h-5 text-indigo-600 mr-3"></i>
+                                    <p class="font-medium text-indigo-800">Data Structures & Algorithms</p>
+                                </div>
+                                <div class="flex items-center text-sm text-neutral-600 ml-8">
+                                    <i data-feather="clock" class="w-4 h-4 mr-2"></i>
+                                    <span>10:00 AM - 11:30 AM</span>
+                                </div>
+                            </div>
+                            <div class="bg-indigo-50 p-4 rounded-lg border border-indigo-200">
+                                <div class="flex items-center mb-2">
+                                    <i data-feather="book-open" class="w-5 h-5 text-indigo-600 mr-3"></i>
+                                    <p class="font-medium text-indigo-800">Database Management Systems</p>
+                                </div>
+                                <div class="flex items-center text-sm text-neutral-600 ml-8">
+                                    <i data-feather="clock" class="w-4 h-4 mr-2"></i>
+                                    <span>02:00 PM - 03:30 PM</span>
+                                </div>
+                            </div>
+                            <div class="p-4 rounded-lg bg-neutral-100 text-center text-sm text-neutral-500">
+                                <p>You have no more classes for today.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl shadow p-6">
+                        <h3 class="text-lg font-semibold mb-4">Recent Attendance History</h3>
+                        <div class="space-y-4">
+                            <div class="p-4 rounded-lg border border-neutral-200 flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <i data-feather="check-circle" class="text-green-500 mr-3"></i>
+                                    <div>
+                                        <p class="font-medium">Web Development Lab</p>
+                                        <p class="text-sm text-neutral-500">Sep 28, 2025</p>
+                                    </div>
+                                </div>
+                                <span class="bg-green-100 text-green-700 text-xs font-semibold px-2.5 py-0.5 rounded-full">Present</span>
+                            </div>
+                            <div class="p-4 rounded-lg border border-neutral-200 flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <i data-feather="x-circle" class="text-red-500 mr-3"></i>
+                                    <div>
+                                        <p class="font-medium">Operating Systems</p>
+                                        <p class="text-sm text-neutral-500">Sep 27, 2025</p>
+                                    </div>
+                                </div>
+                                <span class="bg-red-100 text-red-700 text-xs font-semibold px-2.5 py-0.5 rounded-full">Absent</span>
+                            </div>
+                            <div class="p-4 rounded-lg border border-neutral-200 flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <i data-feather="check-circle" class="text-green-500 mr-3"></i>
+                                    <div>
+                                        <p class="font-medium">Software Engineering</p>
+                                        <p class="text-sm text-neutral-500">Sep 26, 2025</p>
+                                    </div>
+                                </div>
+                                <span class="bg-green-100 text-green-700 text-xs font-semibold px-2.5 py-0.5 rounded-full">Present</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow p-6">
+                    <h3 class="text-lg font-semibold mb-4">Announcement Board</h3>
+                    <div class="space-y-4">
+                        <div class="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
+                            <div class="flex items-center mb-2">
+                                <i data-feather="info" class="w-5 h-5 text-yellow-600 mr-3"></i>
+                                <p class="font-medium text-yellow-800">Important: Final Exam Schedules Posted</p>
+                            </div>
+                            <p class="text-sm text-neutral-600">The final exam schedule for the current semester is now available on the official portal. Check your dates and times.</p>
+                        </div>
+                        <div class="bg-neutral-50 p-4 rounded-lg border border-neutral-200">
+                            <div class="flex items-center mb-2">
+                                <i data-feather="message-square" class="w-5 h-5 text-neutral-600 mr-3"></i>
+                                <p class="font-medium">Faculty Meeting Tomorrow</p>
+                            </div>
+                            <p class="text-sm text-neutral-600">All morning classes on Friday will be held online due to a mandatory faculty meeting. Please check your emails for the meeting links.</p>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+    <div id="logout-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-xl shadow-2xl p-6 w-full max-w-sm">
+            <h3 class="text-xl font-bold text-neutral-800 mb-4">Confirm Logout</h3>
+            <p class="text-neutral-600 mb-6">Are you sure you want to log out of your SmartQR Attendance account?</p>
+            <div class="flex justify-end space-x-3">
+                <button onclick="closeModal('logout-modal')" class="bg-neutral-200 text-neutral-800 px-4 py-2 rounded-lg hover:bg-neutral-300 transition duration-200">
+                    Cancel
+                </button>
+                <button onclick="confirmLogout()" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition duration-200 flex items-center">
+                    <i data-feather="log-out" class="w-4 h-4 mr-1 inline-block"></i> Yes, Logout
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        feather.replace();
+        
+        // JS function to show the modal
+        function showLogoutModal() {
+            document.getElementById('logout-modal').classList.remove('hidden');
+            feather.replace(); // Re-render feather icons in modal
+        }
+
+        // JS function to close the modal
+        function closeModal(id) {
+            document.getElementById(id).classList.add('hidden');
+        }
+
+        // JS function to confirm and execute logout
+        function confirmLogout() {
+            window.location.href = 'index.html';
+        }
+        
+        // Sample chart for attendance
+        const ctx = document.getElementById('attendanceChart').getContext('2d');
+        const attendanceChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+                datasets: [{
+                    label: 'Present',
+                    data: [12, 19, 3, 5, 2, 3],
+                    backgroundColor: '#0ea5e9',
+                    borderColor: '#0ea5e9',
+                    borderWidth: 1
+                }, {
+                    label: 'Absent',
+                    data: [2, 3, 10, 5, 2, 3],
+                    backgroundColor: '#ef4444',
+                    borderColor: '#ef4444',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+<div id="logout-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-xl shadow-2xl p-6 w-full max-w-sm">
+        <h3 class="text-xl font-bold text-neutral-800 mb-4">Confirm Logout</h3>
+        <p class="text-neutral-600 mb-6">Are you sure you want to log out of your SmartQR Attendance account?</p>
+        <div class="flex justify-end space-x-3">
+            <button onclick="closeModal('logout-modal')" class="bg-neutral-200 text-neutral-800 px-4 py-2 rounded-lg hover:bg-neutral-300 transition duration-200">
+                Cancel
+            </button>
+            <button onclick="confirmLogout()" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition duration-200 flex items-center">
+                <i data-feather="log-out" class="w-4 h-4 mr-1 inline-block"></i> Yes, Logout
+            </button>
+        </div>
+    </div>
+</div>
+</html>

@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartQR Attendance</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+        }
+        .sidebar {
+            transition: all 0.3s ease;
+        }
+        .qr-scanner {
+            border: 4px dashed rgba(255,255,255,0.7);
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { border-color: rgba(255,255,255,0.7); }
+            50% { border-color: rgba(255,255,255,0.3); }
+            100% { border-color: rgba(255,255,255,0.7); }
+        }
+    </style>
+</head>
+<body class="bg-neutral-50 font-sans">
+    <div id="auth-screen" class="min-h-screen flex items-center justify-center gradient-bg p-4">
+        <div class="bg-white rounded-xl shadow-2xl p-8 w-full max-w-md">
+            <div class="text-center mb-8">
+                <h1 class="text-3xl font-bold text-sky-700">SmartQR Attendance</h1>
+                <p class="text-neutral-600 mt-2">Efficient attendance tracking with QR technology</p>
+            </div>
+            
+            <div class="flex border-b border-neutral-200 mb-6">
+                <button id="login-tab" class="flex-1 py-2 font-medium text-sky-600 border-b-2 border-sky-600">Login</button>
+                <button id="register-tab" class="flex-1 py-2 font-medium text-neutral-500">Register</button>
+            </div>
+            
+            <div id="login-form">
+                <div class="mb-4">
+                    <label class="block text-neutral-700 mb-2">Role</label>
+                    <select id="login-role" class="w-full px-4 py-2 rounded-lg border border-neutral-300 focus:outline-none focus:ring-2 focus:ring-sky-500">
+                        <option value="student.html">Student</option>
+                        <option value="teacher.html">Teacher</option>
+                        <option value="admin.html">Admin</option>
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-neutral-700 mb-2">Email</label>
+                    <input type="email" id="login-email" class="w-full px-4 py-2 rounded-lg border border-neutral-300 focus:outline-none focus:ring-2 focus:ring-sky-500" required>
+                    <p id="login-email-error" class="text-red-500 text-sm mt-1 hidden">Please use a valid institutional email ending with '.ac.in'.</p>
+                </div>
+                <div class="mb-6">
+                    <label class="block text-neutral-700 mb-2">Password</label>
+                    <input type="password" id="login-password" class="w-full px-4 py-2 rounded-lg border border-neutral-300 focus:outline-none focus:ring-2 focus:ring-sky-500" required>
+                    <p id="login-password-error" class="text-red-500 text-sm mt-1 hidden">Password is required.</p>
+                </div>
+                <button id="login-btn" class="w-full bg-sky-600 text-white py-2 rounded-lg hover:bg-sky-700 transition duration-200">Login</button>
+                <p class="text-center text-neutral-600 mt-4">Forgot password? <a href="#" class="text-sky-600">Reset</a></p>
+            </div>
+            
+            <div id="register-form" class="hidden">
+                <div class="mb-4">
+                    <label class="block text-neutral-700 mb-2">Role</label>
+                    <select id="register-role" class="w-full px-4 py-2 rounded-lg border border-neutral-300 focus:outline-none focus:ring-2 focus:ring-sky-500">
+                        <option>Student</option>
+                        <option>Teacher</option>
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-neutral-700 mb-2">Full Name</label>
+                    <input type="text" id="register-name" class="w-full px-4 py-2 rounded-lg border border-neutral-300 focus:outline-none focus:ring-2 focus:ring-sky-500" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-neutral-700 mb-2">PRN / Roll No.</label>
+                    <input type="text" id="register-prn" class="w-full px-4 py-2 rounded-lg border border-neutral-300 focus:outline-none focus:ring-2 focus:ring-sky-500" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-neutral-700 mb-2">Current Academic Year</label>
+                    <select id="register-year" class="w-full px-4 py-2 rounded-lg border border-neutral-300 focus:outline-none focus:ring-2 focus:ring-sky-500" required>
+                        <option>First</option>
+                        <option>Second</option>
+                        <option>Third</option>
+                        <option>Final</option>
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-neutral-700 mb-2">Email</label>
+                    <input type="email" id="register-email" class="w-full px-4 py-2 rounded-lg border border-neutral-300 focus:outline-none focus:ring-2 focus:ring-sky-500" required>
+                    <p id="register-email-error" class="text-red-500 text-sm mt-1 hidden">Please use a valid institutional email ending with '.ac.in'.</p>
+                </div>
+                <div class="mb-6">
+                    <label class="block text-neutral-700 mb-2">Password</label>
+                    <input type="password" id="register-password" class="w-full px-4 py-2 rounded-lg border border-neutral-300 focus:outline-none focus:ring-2 focus:ring-sky-500" required>
+                    <p id="register-password-error" class="text-red-500 text-sm mt-1 hidden">Password is required.</p>
+                </div>
+                <button id="register-btn" class="w-full bg-sky-600 text-white py-2 rounded-lg hover:bg-sky-700 transition duration-200">Register</button>
+                <p class="text-center text-neutral-600 mt-4">Already have an account? <a href="#" class="text-sky-600">Login</a></p>
+            </div>
+        </div>
+    </div>
+    <script>
+        feather.replace();
+        
+        // Tab switching for auth screen
+        document.getElementById('login-tab').addEventListener('click', function() {
+            document.getElementById('login-form').classList.remove('hidden');
+            document.getElementById('register-form').classList.add('hidden');
+            this.classList.add('border-b-2', 'border-sky-600', 'text-sky-600');
+            document.getElementById('register-tab').classList.remove('border-b-2', 'border-sky-600', 'text-sky-600');
+            document.getElementById('register-tab').classList.add('text-neutral-500');
+            // Hide registration error message when switching tabs
+            document.getElementById('register-email-error').classList.add('hidden');
+            document.getElementById('register-email').classList.remove('border-red-500');
+        });
+        
+        document.getElementById('register-tab').addEventListener('click', function() {
+            document.getElementById('register-form').classList.remove('hidden');
+            document.getElementById('login-form').classList.add('hidden');
+            this.classList.add('border-b-2', 'border-sky-600', 'text-sky-600');
+            document.getElementById('login-tab').classList.remove('border-b-2', 'border-sky-600', 'text-sky-600');
+            document.getElementById('login-tab').classList.add('text-neutral-500');
+            // Hide login error message when switching tabs
+            document.getElementById('login-email-error').classList.add('hidden');
+            document.getElementById('login-email').classList.remove('border-red-500');
+        });
+
+        // Validation for the Login button
+        document.getElementById('login-btn').addEventListener('click', function(event) {
+            const emailInput = document.getElementById('login-email');
+            const emailError = document.getElementById('login-email-error');
+            const passwordInput = document.getElementById('login-password');
+            const passwordError = document.getElementById('login-password-error');
+            const roleSelect = document.getElementById('login-role');
+            
+            let isValid = true;
+
+            // Check if password is empty
+            if (passwordInput.value.trim() === '') {
+                passwordError.classList.remove('hidden');
+                passwordInput.classList.add('border-red-500');
+                isValid = false;
+            } else {
+                passwordError.classList.add('hidden');
+                passwordInput.classList.remove('border-red-500');
+            }
+
+            // Check if email ends with .ac.in
+            if (!emailInput.value.endsWith('.ac.in')) {
+                emailError.classList.remove('hidden');
+                emailInput.classList.add('border-red-500');
+                isValid = false;
+            } else {
+                emailError.classList.add('hidden');
+                emailInput.classList.remove('border-red-500');
+            }
+
+            if (isValid) {
+                // Redirect based on the selected role
+                window.location.href = roleSelect.value;
+            } else {
+                event.preventDefault(); // Prevent form submission
+            }
+        });
+        
+        // Validation for the Register button
+        document.getElementById('register-btn').addEventListener('click', function(event) {
+            const emailInput = document.getElementById('register-email');
+            const emailError = document.getElementById('register-email-error');
+            const passwordInput = document.getElementById('register-password');
+            const passwordError = document.getElementById('register-password-error');
+            const nameInput = document.getElementById('register-name');
+            const prnInput = document.getElementById('register-prn');
+            const yearSelect = document.getElementById('register-year');
+
+            let isValid = true;
+            
+            // Check if password is empty
+            if (passwordInput.value.trim() === '') {
+                passwordError.classList.remove('hidden');
+                passwordInput.classList.add('border-red-500');
+                isValid = false;
+            } else {
+                passwordError.classList.add('hidden');
+                passwordInput.classList.remove('border-red-500');
+            }
+
+            // Check if email ends with .ac.in
+            if (!emailInput.value.endsWith('.ac.in')) {
+                emailError.classList.remove('hidden');
+                emailInput.classList.add('border-red-500');
+                isValid = false;
+            } else {
+                emailError.classList.add('hidden');
+                emailInput.classList.remove('border-red-500');
+            }
+
+            // Comprehensive check for other required fields
+            if (nameInput.value.trim() === '' || prnInput.value.trim() === '' || yearSelect.value === '') {
+                alert('All fields are required.');
+                isValid = false;
+            }
+
+            if (isValid) {
+                // You would add your actual registration logic here
+                alert('Registration successful! (Note: This is a demo. Actual registration would happen on the server)');
+            } else {
+                event.preventDefault(); // Prevent form submission
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Settings</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <style>
+        .sidebar {
+            transition: all 0.3s ease;
+        }
+    </style>
+</head>
+<body class="bg-neutral-50 font-sans">
+    <div class="min-h-screen">
+        <div class="flex">
+            <div class="sidebar w-64 bg-sky-800 text-white min-h-screen p-4">
+                <div class="flex items-center mb-8">
+                    <div class="w-10 h-10 rounded-full bg-sky-600 flex items-center justify-center mr-3">
+                        <i data-feather="user"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-medium">John Doe</h3>
+                        <p class="text-xs text-sky-200">Student</p>
+                    </div>
+                </div>
+                <nav>
+                    <a href="student.html" class="flex items-center py-2 px-3 rounded-lg hover:bg-sky-700 mb-2">
+                        <i data-feather="home" class="mr-3"></i> Dashboard
+                    </a>
+                    <a href="attendance.html" class="flex items-center py-2 px-3 rounded-lg hover:bg-sky-700 mb-2">
+                        <i data-feather="calendar" class="mr-3"></i> Attendance
+                    </a>
+                    <a href="reports.html" class="flex items-center py-2 px-3 rounded-lg hover:bg-sky-700 mb-2">
+                        <i data-feather="bar-chart-2" class="mr-3"></i> Reports
+                    </a>
+                    <a href="profile.html" class="flex items-center py-2 px-3 rounded-lg hover:bg-sky-700 mb-2">
+                        <i data-feather="user" class="mr-3"></i> Profile & QR Code
+                    </a>
+                    <a href="settings.html" class="flex items-center py-2 px-3 rounded-lg bg-sky-700 mb-2">
+                        <i data-feather="settings" class="mr-3"></i> Settings
+                    </a>
+                </nav>
+            </div>
+
+            <div class="flex-1 p-8">
+                <div class="flex justify-between items-center mb-8">
+                    <h2 class="text-2xl font-bold text-neutral-800">Settings</h2>
+                    <button class="bg-sky-600 text-white px-4 py-2 rounded-lg hover:bg-sky-700 transition duration-200 flex items-center" onclick="window.location.href='index.html'">
+                        <i data-feather="log-out" class="mr-2"></i> Logout
+                    </button>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow p-6 mb-8">
+                    <h3 class="text-xl font-semibold mb-4">Change Password</h3>
+                    <form id="password-form" class="space-y-4">
+                        <div>
+                            <label for="current-password" class="block text-neutral-700 mb-1">Current Password</label>
+                            <input type="password" id="current-password" class="w-full p-2 rounded-lg border border-neutral-300 focus:outline-none focus:ring-2 focus:ring-sky-500" required>
+                        </div>
+                        <div>
+                            <label for="new-password" class="block text-neutral-700 mb-1">New Password</label>
+                            <input type="password" id="new-password" class="w-full p-2 rounded-lg border border-neutral-300 focus:outline-none focus:ring-2 focus:ring-sky-500" required>
+                        </div>
+                        <div>
+                            <label for="confirm-password" class="block text-neutral-700 mb-1">Confirm New Password</label>
+                            <input type="password" id="confirm-password" class="w-full p-2 rounded-lg border border-neutral-300 focus:outline-none focus:ring-2 focus:ring-sky-500" required>
+                            <p id="password-error" class="text-red-500 text-sm mt-1 hidden">Passwords do not match.</p>
+                        </div>
+                        <button type="submit" class="bg-sky-600 text-white px-4 py-2 rounded-lg hover:bg-sky-700 transition duration-200">Update Password</button>
+                    </form>
+                </div>
+
+                <div class="bg-white rounded-xl shadow p-6 mb-8">
+                    <h3 class="text-xl font-semibold mb-4">Notification Preferences</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <p class="text-neutral-700">Receive Attendance Alerts</p>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" value="" class="sr-only peer" checked>
+                                <div class="w-11 h-6 bg-neutral-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-sky-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-neutral-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-sky-600"></div>
+                            </label>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <p class="text-neutral-700">Receive Announcement Emails</p>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" value="" class="sr-only peer" checked>
+                                <div class="w-11 h-6 bg-neutral-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-sky-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-neutral-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-sky-600"></div>
+                            </label>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <p class="text-neutral-700">Receive Weekly Reports</p>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" value="" class="sr-only peer">
+                                <div class="w-11 h-6 bg-neutral-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-sky-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-neutral-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-sky-600"></div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow p-6 border-l-4 border-red-500">
+                    <h3 class="text-xl font-semibold mb-4 text-red-700">Danger Zone</h3>
+                    <p class="text-sm text-neutral-600 mb-4">
+                        These actions are permanent and cannot be undone. Please proceed with caution.
+                    </p>
+                    <div class="flex flex-col space-y-3 sm:flex-row sm:space-x-4 sm:space-y-0">
+                        <button onclick="alert('Your data has been requested for export. You will receive an email shortly.');" class="w-full sm:w-auto bg-neutral-200 text-neutral-800 px-4 py-2 rounded-lg hover:bg-neutral-300 transition duration-200">
+                            Export My Data
+                        </button>
+                        <button onclick="if(confirm('Are you sure you want to delete your account? This action is irreversible.')){ alert('Your account has been deleted.'); }" class="w-full sm:w-auto bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition duration-200">
+                            Delete My Account
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <script>
+        feather.replace();
+
+        // Password change validation
+        document.getElementById('password-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const newPassword = document.getElementById('new-password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+            const passwordError = document.getElementById('password-error');
+
+            if (newPassword !== confirmPassword) {
+                passwordError.classList.remove('hidden');
+                document.getElementById('new-password').classList.add('border-red-500');
+                document.getElementById('confirm-password').classList.add('border-red-500');
+            } else {
+                passwordError.classList.add('hidden');
+                document.getElementById('new-password').classList.remove('border-red-500');
+                document.getElementById('confirm-password').classList.remove('border-red-500');
+                alert('Password updated successfully!');
+                this.reset();
+            }
+        });
+    </script>
+</body>
+<div id="logout-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-xl shadow-2xl p-6 w-full max-w-sm">
+        <h3 class="text-xl font-bold text-neutral-800 mb-4">Confirm Logout</h3>
+        <p class="text-neutral-600 mb-6">Are you sure you want to log out of your SmartQR Attendance account?</p>
+        <div class="flex justify-end space-x-3">
+            <button onclick="closeModal('logout-modal')" class="bg-neutral-200 text-neutral-800 px-4 py-2 rounded-lg hover:bg-neutral-300 transition duration-200">
+                Cancel
+            </button>
+            <button onclick="confirmLogout()" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition duration-200 flex items-center">
+                <i data-feather="log-out" class="w-4 h-4 mr-1 inline-block"></i> Yes, Logout
+            </button>
+        </div>
+    </div>
+</div>
+</html>

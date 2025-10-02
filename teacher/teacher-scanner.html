@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Scanner | Teacher Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jsqr@1.1.0/dist/jsQR.min.js"></script>
+    <style>
+        .sidebar {
+            transition: all 0.3s ease;
+        }
+        .qr-scanner-area {
+            height: 350px;
+            background-color: #222;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            border: 4px dashed #9ca3af;
+        }
+        #scanner-video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .scan-line {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: #4ade80; /* Tailwind green-400 */
+            box-shadow: 0 0 10px #4ade80;
+            animation: scanning 2s infinite linear;
+        }
+        @keyframes scanning {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(350px); }
+        }
+        .pulse-border {
+            border-color: #0ea5e9;
+            box-shadow: 0 0 10px #0ea5e9;
+        }
+    </style>
+</head>
+<body class="bg-neutral-50 font-sans">
+    <div class="min-h-screen">
+        <div class="flex">
+            <div class="sidebar w-64 bg-sky-800 text-white min-h-screen p-4">
+                <div class="flex items-center mb-8">
+                    <div class="w-10 h-10 rounded-full bg-sky-600 flex items-center justify-center mr-3">
+                        <i data-feather="user"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-medium">Prof. Smith</h3>
+                        <p class="text-xs text-sky-200">Teacher</p>
+                    </div>
+                </div>
+                <nav>
+                    <a href="teacher.html" class="flex items-center py-2 px-3 rounded-lg hover:bg-sky-700 mb-2">
+                        <i data-feather="home" class="mr-3"></i> Dashboard
+                    </a>
+                    <a href="teacher-scanner.html" class="flex items-center py-2 px-3 rounded-lg bg-sky-700 mb-2">
+                        <i data-feather="maximize-2" class="mr-3"></i> QR Scanner
+                    </a>
+                    <a href="teacher-timetable.html" class="flex items-center py-2 px-3 rounded-lg hover:bg-sky-700 mb-2">
+                        <i data-feather="calendar" class="mr-3"></i> Timetable
+                    </a>
+                    <a href="teacher-classes.html" class="flex items-center py-2 px-3 rounded-lg hover:bg-sky-700 mb-2">
+                        <i data-feather="users" class="mr-3"></i> My Classes
+                    </a>
+                    <a href="teacher-reports.html" class="flex items-center py-2 px-3 rounded-lg hover:bg-sky-700 mb-2">
+                        <i data-feather="bar-chart-2" class="mr-3"></i> Reports
+                    </a>
+                    <a href="teacher-notifications.html" class="flex items-center py-2 px-3 rounded-lg hover:bg-sky-700 mb-2">
+                        <i data-feather="mail" class="mr-3"></i> Notifications
+                    </a>
+                </nav>
+            </div>
+            
+            <div class="flex-1 p-8">
+                <div class="flex justify-between items-center mb-8">
+                    <h2 class="text-2xl font-bold text-neutral-800">QR Attendance Scanner</h2>
+                    <button class="bg-sky-600 text-white px-4 py-2 rounded-lg hover:bg-sky-700 transition duration-200 flex items-center" onclick="showLogoutModal()">
+                        <i data-feather="log-out" class="mr-2"></i> Logout
+                    </button>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow p-6 mb-8">
+                    <h3 class="text-xl font-semibold mb-6">Live Class Attendance</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                        <select id="select-class" class="px-4 py-2 rounded-lg border border-neutral-300 focus:outline-none focus:ring-2 focus:ring-sky-500">
+                            <option value="">Select Class to Scan</option>
+                            <option value="Data Structures (FY-A)">Data Structures (FY-A) - 10:30 AM</option>
+                            <option value="Algorithms (SY-B)">Algorithms (SY-B) - 12:00 PM</option>
+                            <option value="Database Systems (TY-C)">Database Systems (TY-C) - 1:30 PM</option>
+                        </select>
+                        <div class="col-span-2 flex space-x-4">
+                            <button id="start-scan-btn" onclick="toggleScanning()" class="w-full md:w-1/2 bg-sky-600 text-white px-4 py-2 rounded-lg hover:bg-sky-700 transition duration-200 flex items-center justify-center">
+                                <i data-feather="camera" class="mr-2"></i> Start Scanning
+                            </button>
+                            <button onclick="manualEntry()" class="w-full md:w-1/2 bg-neutral-100 text-neutral-700 px-4 py-2 rounded-lg hover:bg-neutral-200 transition duration-200 flex items-center justify-center">
+                                <i data-feather="upload" class="mr-2"></i> Manual Entry
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div class="flex-1">
+                            <p class="text-sm font-medium text-neutral-700 mb-2">Scanner Feed (Status: <span id="scan-status" class="text-red-500">Stopped</span>)</p>
+                            <div id="scanner-view" class="qr-scanner-area w-full rounded-lg relative">
+                                <video id="scanner-video" class="hidden"></video>
+                                <canvas id="scanner-canvas" class="hidden absolute top-0 left-0 w-full h-full"></canvas>
+                                <div id="no-camera-text" class="text-center text-white">
+                                    <i data-feather="camera-off" class="w-12 h-12 mx-auto text-neutral-400"></i>
+                                    <p class="text-neutral-400 mt-2">Select a Class and Click 'Start'</p>
+                                </div>
+                                <div id="scan-line" class="scan-line hidden"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex-1">
+                            <h4 class="font-medium mb-4">Recent Scans (<span id="current-class-display">No Class Selected</span>)</h4>
+                            <div id="scan-log" class="space-y-3 max-h-[350px] overflow-y-auto pr-2">
+                                </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="logout-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-xl shadow-2xl p-6 w-full max-w-sm">
+            <h3 class="text-xl font-bold text-neutral-800 mb-4">Confirm Logout</h3>
+            <p class="text-neutral-600 mb-6">Are you sure you want to log out of your SmartQR Attendance account?</p>
+            <div class="flex justify-end space-x-3">
+                <button onclick="closeModal('logout-modal')" class="bg-neutral-200 text-neutral-800 px-4 py-2 rounded-lg hover:bg-neutral-300 transition duration-200">
+                    Cancel
+                </button>
+                <button onclick="confirmLogout()" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition duration-200 flex items-center">
+                    <i data-feather="log-out" class="w-4 h-4 mr-1 inline-block"></i> Yes, Logout
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="manual-entry-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-xl shadow-2xl p-6 w-full max-w-md">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold text-neutral-800">Manual Attendance Entry</h3>
+                <button onclick="closeModal('manual-entry-modal')" class="text-neutral-500 hover:text-neutral-800">
+                    <i data-feather="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+            <form onsubmit="event.preventDefault(); submitManualEntry();" class="space-y-4">
+                <div>
+                    <label class="block text-neutral-700 mb-1">Student PRN / Roll No.</label>
+                    <input type="text" id="manual-prn" class="w-full p-2 rounded-lg border border-neutral-300 focus:outline-none focus:ring-2 focus:ring-sky-500" required>
+                </div>
+                <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition duration-200 flex items-center justify-center">
+                    <i data-feather="check" class="mr-2"></i> Submit Attendance
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        feather.replace();
+        
+        let isScanning = false;
+        let scanInterval;
+        let videoStream;
+
+        const scanStatusElement = document.getElementById('scan-status');
+        const startScanButton = document.getElementById('start-scan-btn');
+        const scanLine = document.getElementById('scan-line');
+        const scannerView = document.getElementById('scanner-view');
+        const videoElement = document.getElementById('scanner-video');
+        const canvasElement = document.getElementById('scanner-canvas');
+        const canvasContext = canvasElement.getContext('2d');
+        const noCameraText = document.getElementById('no-camera-text');
+        const classSelect = document.getElementById('select-class');
+        const currentClassDisplay = document.getElementById('current-class-display');
+        const scanLog = document.getElementById('scan-log');
+
+        const dummyStudents = [
+            { name: "Alex Chen", prn: "12301", batch: "FY-B.Tech-A" },
+            { name: "Maria Garcia", prn: "12302", batch: "FY-B.Tech-A" },
+            { name: "Ben Turner", prn: "12303", batch: "SY-B.Tech-B" },
+            { name: "Chloe King", prn: "12304", batch: "TY-B.Tech-C" },
+            { name: "David Lee", prn: "12305", batch: "FY-B.Tech-A" },
+        ];
+        
+        const scannedPRNs = new Set(); // To prevent duplicate scans in a single session
+
+        function addScanLogEntry(studentName, studentPRN, batch, status = 'Present') {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+            
+            const statusColor = status === 'Present' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800';
+            const statusIcon = status === 'Present' ? 'check-circle' : 'x-circle';
+
+            const newEntry = document.createElement('div');
+            newEntry.className = `flex items-center p-2 rounded-lg hover:bg-neutral-50 transition`;
+            newEntry.innerHTML = `
+                <div class="w-8 h-8 rounded-full bg-sky-100 flex items-center justify-center mr-3 flex-shrink-0">
+                    <i data-feather="${statusIcon}" class="w-4 h-4 text-sky-600"></i>
+                </div>
+                <div class="flex-1">
+                    <p class="font-medium text-sm">${studentName}</p>
+                    <p class="text-xs text-neutral-500">${batch} | ${timeString}</p>
+                </div>
+                <span class="${statusColor} text-xs px-2 py-1 rounded-full font-semibold">
+                    ${status}
+                </span>
+            `;
+
+            scanLog.prepend(newEntry);
+            feather.replace();
+
+            if (scanLog.children.length > 15) {
+                scanLog.lastChild.remove();
+            }
+        }
+
+        function startCamera() {
+            return navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+                .then(stream => {
+                    videoStream = stream;
+                    videoElement.srcObject = stream;
+                    videoElement.play();
+                    videoElement.classList.remove('hidden');
+                    noCameraText.classList.add('hidden');
+                    canvasElement.classList.remove('hidden');
+                    scanLine.classList.remove('hidden');
+                    return stream;
+                })
+                .catch(err => {
+                    console.error("Error accessing camera:", err);
+                    alert("Could not access the camera. Please ensure you have granted permission.");
+                    return null;
+                });
+        }
+
+        function stopCamera() {
+            if (videoStream) {
+                videoStream.getTracks().forEach(track => track.stop());
+                videoElement.classList.add('hidden');
+                canvasElement.classList.add('hidden');
+                noCameraText.classList.remove('hidden');
+                scanLine.classList.add('hidden');
+            }
+        }
+
+        function scanQRCode() {
+            if (videoElement.readyState === videoElement.HAVE_ENOUGH_DATA) {
+                canvasElement.height = videoElement.videoHeight;
+                canvasElement.width = videoElement.videoWidth;
+                canvasContext.drawImage(videoElement, 0, 0, canvasElement.width, canvasElement.height);
+                const imageData = canvasContext.getImageData(0, 0, canvasElement.width, canvasElement.height);
+                const code = jsQR(imageData.data, imageData.width, imageData.height);
+
+                if (code) {
+                    if (!scannedPRNs.has(code.data)) {
+                        scannedPRNs.add(code.data);
+                        const student = dummyStudents.find(s => s.prn === code.data);
+                        if (student) {
+                            addScanLogEntry(student.name, student.prn, student.batch, 'Present');
+                            scannerView.classList.add('pulse-border');
+                            setTimeout(() => scannerView.classList.remove('pulse-border'), 500);
+                            alert(`Student ${student.name} checked in!`);
+                        } else {
+                            addScanLogEntry('Unknown Student', code.data, 'N/A', 'Absent');
+                            scannerView.classList.add('pulse-border');
+                            setTimeout(() => scannerView.classList.remove('pulse-border'), 500);
+                            alert(`Error: Student with PRN ${code.data} not found.`);
+                        }
+                    }
+                }
+            }
+            if (isScanning) {
+                requestAnimationFrame(scanQRCode);
+            }
+        }
+
+        async function toggleScanning() {
+            const selectedClass = classSelect.value;
+            if (!selectedClass) {
+                alert('Please select a class before starting the scanner.');
+                return;
+            }
+
+            if (isScanning) {
+                isScanning = false;
+                stopCamera();
+                startScanButton.innerHTML = '<i data-feather="camera" class="mr-2"></i> Start Scanning';
+                scanStatusElement.textContent = 'Stopped';
+                scanStatusElement.classList.remove('text-green-500');
+                scanStatusElement.classList.add('text-red-500');
+            } else {
+                const stream = await startCamera();
+                if (stream) {
+                    isScanning = true;
+                    startScanButton.innerHTML = '<i data-feather="pause" class="mr-2"></i> Stop Scanning';
+                    scanStatusElement.textContent = 'Scanning...';
+                    scanStatusElement.classList.remove('text-red-500');
+                    scanStatusElement.classList.add('text-green-500');
+                    currentClassDisplay.textContent = selectedClass;
+                    scanLog.innerHTML = ''; // Clear previous log
+                    scannedPRNs.clear(); // Reset scanned codes for new session
+                    requestAnimationFrame(scanQRCode);
+                }
+            }
+            feather.replace();
+        }
+
+        function manualEntry() {
+             const selectedClass = classSelect.value;
+            if (!selectedClass) {
+                alert('Please select a class before using Manual Entry.');
+                return;
+            }
+            document.getElementById('manual-entry-modal').classList.remove('hidden');
+        }
+
+        function submitManualEntry() {
+            const prn = document.getElementById('manual-prn').value.trim();
+            const selectedClass = classSelect.value;
+            
+            if (!prn) {
+                alert('PRN is required for manual entry.');
+                return;
+            }
+            
+            const student = dummyStudents.find(s => s.prn === prn);
+
+            if (student) {
+                addScanLogEntry(student.name, student.prn, student.batch, 'Present');
+                alert(`${student.name} marked Present manually for ${selectedClass}.`);
+            } else {
+                alert(`Error: PRN ${prn} not found in the system.`);
+            }
+            
+            document.getElementById('manual-prn').value = '';
+            closeModal('manual-entry-modal');
+        }
+
+        function showLogoutModal() {
+            document.getElementById('logout-modal').classList.remove('hidden');
+            feather.replace();
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.add('hidden');
+        }
+
+        function confirmLogout() {
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>

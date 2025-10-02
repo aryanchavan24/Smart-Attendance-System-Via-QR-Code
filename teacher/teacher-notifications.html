@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notifications | Teacher Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <style>
+        .sidebar {
+            transition: all 0.3s ease;
+        }
+    </style>
+</head>
+<body class="bg-neutral-50 font-sans">
+    <div class="min-h-screen">
+        <div class="flex">
+            <div class="sidebar w-64 bg-sky-800 text-white min-h-screen p-4">
+                <div class="flex items-center mb-8">
+                    <div class="w-10 h-10 rounded-full bg-sky-600 flex items-center justify-center mr-3">
+                        <i data-feather="user"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-medium">Prof. Smith</h3>
+                        <p class="text-xs text-sky-200">Teacher</p>
+                    </div>
+                </div>
+                <nav>
+                    <a href="teacher.html" class="flex items-center py-2 px-3 rounded-lg hover:bg-sky-700 mb-2">
+                        <i data-feather="home" class="mr-3"></i> Dashboard
+                    </a>
+                    <a href="teacher-scanner.html" class="flex items-center py-2 px-3 rounded-lg hover:bg-sky-700 mb-2">
+                        <i data-feather="maximize-2" class="mr-3"></i> QR Scanner
+                    </a>
+                    <a href="teacher-timetable.html" class="flex items-center py-2 px-3 rounded-lg hover:bg-sky-700 mb-2">
+                        <i data-feather="calendar" class="mr-3"></i> Timetable
+                    </a>
+                    <a href="teacher-classes.html" class="flex items-center py-2 px-3 rounded-lg hover:bg-sky-700 mb-2">
+                        <i data-feather="users" class="mr-3"></i> My Classes
+                    </a>
+                    <a href="teacher-reports.html" class="flex items-center py-2 px-3 rounded-lg hover:bg-sky-700 mb-2">
+                        <i data-feather="bar-chart-2" class="mr-3"></i> Reports
+                    </a>
+                    <a href="teacher-notifications.html" class="flex items-center py-2 px-3 rounded-lg bg-sky-700 mb-2">
+                        <i data-feather="mail" class="mr-3"></i> Notifications
+                    </a>
+                </nav>
+            </div>
+            
+            <div class="flex-1 p-8">
+                <div class="flex justify-between items-center mb-8">
+                    <h2 class="text-2xl font-bold text-neutral-800">Notifications</h2>
+                    <button class="bg-sky-600 text-white px-4 py-2 rounded-lg hover:bg-sky-700 transition duration-200 flex items-center" onclick="showLogoutModal()">
+                        <i data-feather="log-out" class="mr-2"></i> Logout
+                    </button>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow p-6">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-lg font-semibold">Your Recent Notifications</h3>
+                        <div class="flex space-x-2">
+                            <button onclick="markAllAsRead()" class="bg-neutral-200 text-neutral-800 px-3 py-1 rounded-lg text-sm hover:bg-neutral-300 transition duration-200">
+                                <i data-feather="check-circle" class="w-4 h-4 inline-block mr-1"></i> Mark All as Read
+                            </button>
+                            <select onchange="filterNotifications(this.value)" class="px-3 py-1 rounded-lg border border-neutral-300 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500">
+                                <option value="all">All Notifications</option>
+                                <option value="announcement">Announcements</option>
+                                <option value="alert">Attendance Alerts</option>
+                                <option value="system">System Updates</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div id="notification-list" class="space-y-4">
+                        </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="logout-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-xl shadow-2xl p-6 w-full max-w-sm">
+            <h3 class="text-xl font-bold text-neutral-800 mb-4">Confirm Logout</h3>
+            <p class="text-neutral-600 mb-6">Are you sure you want to log out of your SmartQR Attendance account?</p>
+            <div class="flex justify-end space-x-3">
+                <button onclick="closeModal('logout-modal')" class="bg-neutral-200 text-neutral-800 px-4 py-2 rounded-lg hover:bg-neutral-300 transition duration-200">
+                    Cancel
+                </button>
+                <button onclick="confirmLogout()" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition duration-200 flex items-center">
+                    <i data-feather="log-out" class="w-4 h-4 mr-1 inline-block"></i> Yes, Logout
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="announcement-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-xl shadow-2xl p-6 w-full max-w-md">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold text-neutral-800" id="announcement-modal-title">Announcement</h3>
+                <button onclick="closeModal('announcement-modal')" class="text-neutral-500 hover:text-neutral-800 transition duration-200">
+                    <i data-feather="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+            <p id="announcement-modal-content" class="text-neutral-600 mb-4"></p>
+            <div class="text-right">
+                <p class="text-xs text-neutral-400" id="announcement-modal-time"></p>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        feather.replace();
+
+        function showLogoutModal() {
+            document.getElementById('logout-modal').classList.remove('hidden');
+            feather.replace();
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.add('hidden');
+        }
+
+        function confirmLogout() {
+            window.location.href = 'index.html';
+        }
+
+        // Dummy data for notifications
+        let notifications = [
+            { id: 1, type: 'announcement', title: 'New Exam Schedule Posted', message: 'The final exam schedule for the current semester is now available. Please check the official portal for details.', time: '2 hours ago', read: false },
+            { id: 2, type: 'alert', title: 'Low Attendance Alert', message: 'Attendance for "Algorithms" (SY B.Tech-B) is below 75% this month.', time: 'Yesterday', read: false },
+            { id: 3, type: 'system', title: 'System Update', message: 'The new quarterly attendance report has been generated. View it in the Reports section.', time: '3 days ago', read: true },
+            { id: 4, type: 'alert', title: 'Low Attendance Alert', message: 'Michael Brown\'s attendance is at 62% for Data Structures.', time: '4 days ago', read: false },
+        ];
+        
+        const notificationListElement = document.getElementById('notification-list');
+
+        function renderNotifications(filteredNotifications) {
+            notificationListElement.innerHTML = '';
+            filteredNotifications.forEach(notification => {
+                const newEntry = document.createElement('div');
+                const isRead = notification.read;
+                const typeColor = {
+                    announcement: 'yellow',
+                    alert: 'red',
+                    system: 'sky'
+                }[notification.type];
+
+                newEntry.className = `flex items-start p-4 rounded-lg border-l-4 border-${typeColor}-500 transition-colors ${isRead ? 'bg-neutral-50' : 'bg-white'}`;
+                newEntry.dataset.type = notification.type;
+
+                newEntry.innerHTML = `
+                    <i data-feather="${notification.type === 'announcement' ? 'info' : notification.type === 'alert' ? 'alert-triangle' : 'mail'}" class="w-6 h-6 text-${typeColor}-500 flex-shrink-0 mr-4"></i>
+                    <div class="flex-1">
+                        <p class="font-medium ${isRead ? 'text-neutral-600' : 'text-neutral-800'}">${notification.title}</p>
+                        <p class="text-sm text-neutral-600 mt-1">${notification.message}</p>
+                        <p class="text-xs text-neutral-400 mt-2">${notification.time}</p>
+                    </div>
+                    <div class="flex-shrink-0 space-x-2">
+                        <button onclick="markAsRead(${notification.id}, event)" class="${isRead ? 'hidden' : ''} text-sky-600 hover:text-sky-800 transition duration-200">
+                            <i data-feather="check-circle" class="w-4 h-4"></i>
+                        </button>
+                        ${notification.type === 'announcement' ? `<button onclick="viewAnnouncement(${notification.id}, event)" class="text-neutral-600 hover:text-neutral-800 transition duration-200">
+                            <i data-feather="eye" class="w-4 h-4"></i>
+                        </button>` : ''}
+                        <button onclick="archiveNotification(${notification.id}, event)" class="text-red-600 hover:text-red-800 transition duration-200">
+                            <i data-feather="x-circle" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                `;
+                notificationListElement.appendChild(newEntry);
+            });
+            feather.replace();
+        }
+
+        function markAllAsRead() {
+            notifications.forEach(n => n.read = true);
+            renderNotifications(notifications);
+        }
+
+        function markAsRead(id, event) {
+            event.stopPropagation();
+            const notification = notifications.find(n => n.id === id);
+            if (notification) {
+                notification.read = true;
+                renderNotifications(notifications);
+            }
+        }
+        
+        function archiveNotification(id, event) {
+            event.stopPropagation();
+            notifications = notifications.filter(n => n.id !== id);
+            renderNotifications(notifications);
+        }
+
+        function viewAnnouncement(id, event) {
+            event.stopPropagation();
+            const notification = notifications.find(n => n.id === id);
+            if (notification) {
+                document.getElementById('announcement-modal-title').textContent = notification.title;
+                document.getElementById('announcement-modal-content').textContent = notification.message;
+                document.getElementById('announcement-modal-time').textContent = notification.time;
+                document.getElementById('announcement-modal').classList.remove('hidden');
+                notification.read = true;
+                renderNotifications(notifications);
+            }
+        }
+
+        function filterNotifications(type) {
+            let filtered;
+            if (type === 'all') {
+                filtered = notifications;
+            } else {
+                filtered = notifications.filter(n => n.type === type);
+            }
+            renderNotifications(filtered);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderNotifications(notifications);
+        });
+    </script>
+</body>
+</html>

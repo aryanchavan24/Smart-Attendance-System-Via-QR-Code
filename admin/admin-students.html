@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Students | Admin Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+    <style>
+        .sidebar {
+            transition: all 0.3s ease;
+        }
+    </style>
+</head>
+<body class="bg-neutral-50 font-sans">
+    <div class="min-h-screen">
+        <div class="flex">
+            <div class="sidebar w-64 bg-sky-800 text-white min-h-screen p-4">
+                <div class="flex items-center mb-8">
+                    <div class="w-10 h-10 rounded-full bg-sky-600 flex items-center justify-center mr-3">
+                        <i data-feather="lock"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-medium">Admin User</h3>
+                        <p class="text-xs text-sky-200">Administrator</p>
+                    </div>
+                </div>
+                <nav>
+                    <a href="admin.html" class="flex items-center py-2 px-3 rounded-lg hover:bg-sky-700 mb-2">
+                        <i data-feather="home" class="mr-3"></i> Dashboard
+                    </a>
+                    <a href="admin-students.html" class="flex items-center py-2 px-3 rounded-lg bg-sky-700 mb-2">
+                        <i data-feather="users" class="mr-3"></i> Students
+                    </a>
+                    <a href="admin-teachers.html" class="flex items-center py-2 px-3 rounded-lg hover:bg-sky-700 mb-2">
+                        <i data-feather="user-check" class="mr-3"></i> Teachers
+                    </a>
+                    <a href="admin-classes.html" class="flex items-center py-2 px-3 rounded-lg hover:bg-sky-700 mb-2">
+                        <i data-feather="layers" class="mr-3"></i> Classes & Batches
+                    </a>
+                    <a href="admin-reports.html" class="flex items-center py-2 px-3 rounded-lg hover:bg-sky-700 mb-2">
+                        <i data-feather="file-text" class="mr-3"></i> Reports
+                    </a>
+                    <a href="admin-settings.html" class="flex items-center py-2 px-3 rounded-lg hover:bg-sky-700 mb-2">
+                        <i data-feather="settings" class="mr-3"></i> System Settings
+                    </a>
+                </nav>
+            </div>
+            
+            <div class="flex-1 p-8">
+                <div class="flex justify-between items-center mb-8">
+                    <h2 class="text-2xl font-bold text-neutral-800">Student Management</h2>
+                    <button class="bg-sky-600 text-white px-4 py-2 rounded-lg hover:bg-sky-700 transition duration-200 flex items-center" onclick="showLogoutModal()">
+                        <i data-feather="log-out" class="mr-2"></i> Logout
+                    </button>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow p-6 mb-8">
+                    <div class="flex flex-col md:flex-row justify-between items-center mb-4 space-y-4 md:space-y-0">
+                        <h3 class="text-lg font-semibold">Student Roster</h3>
+                        <div class="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-4">
+                            <input type="text" placeholder="Search by name or PRN..." class="w-full md:w-auto px-4 py-2 rounded-lg border border-neutral-300 focus:outline-none focus:ring-2 focus:ring-sky-500">
+                            <select class="px-4 py-2 rounded-lg border border-neutral-300 focus:outline-none focus:ring-2 focus:ring-sky-500">
+                                <option>Filter by Year</option>
+                                <option>First Year</option>
+                                <option>Second Year</option>
+                                <option>Third Year</option>
+                                <option>Final Year</option>
+                            </select>
+                            <button onclick="generateAllQRCodes()" class="bg-sky-600 text-white px-4 py-2 rounded-lg hover:bg-sky-700 transition duration-200 flex items-center justify-center">
+                                <i data-feather="refresh-cw" class="mr-2"></i> Generate All QR Codes
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-neutral-200">
+                            <thead class="bg-neutral-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">PRN / Roll No.</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">Name</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">Email</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">Academic Year</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="student-roster-body" class="bg-white divide-y divide-neutral-200">
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-neutral-900">12345</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-neutral-500">John Doe</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-neutral-500">john.doe@college.ac.in</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-neutral-500">Second</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-neutral-500">
+                                        <button class="text-sky-600 hover:text-sky-800 mr-3" onclick="alert('Viewing John Doe\'s profile');">
+                                            <i data-feather="eye" class="w-4 h-4"></i>
+                                        </button>
+                                        <button class="text-yellow-600 hover:text-yellow-800 mr-3" onclick="alert('Editing John Doe\'s profile');">
+                                            <i data-feather="edit" class="w-4 h-4"></i>
+                                        </button>
+                                        <button class="text-red-600 hover:text-red-800" onclick="alert('Deleting John Doe\'s account...');">
+                                            <i data-feather="trash-2" class="w-4 h-4"></i>
+                                        </button>
+                                        <button class="text-green-600 hover:text-green-800 mr-3" onclick="emailQRCode('john.doe@college.ac.in', '12345')">
+                                            <i data-feather="mail" class="w-4 h-4"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-neutral-900">12346</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-neutral-500">Jane Smith</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-neutral-500">jane.smith@college.ac.in</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-neutral-500">First</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-neutral-500">
+                                        <button class="text-sky-600 hover:text-sky-800 mr-3" onclick="alert('Viewing Jane Smith\'s profile');">
+                                            <i data-feather="eye" class="w-4 h-4"></i>
+                                        </button>
+                                        <button class="text-yellow-600 hover:text-yellow-800 mr-3" onclick="alert('Editing Jane Smith\'s profile');">
+                                            <i data-feather="edit" class="w-4 h-4"></i>
+                                        </button>
+                                        <button class="text-red-600 hover:text-red-800" onclick="alert('Deleting Jane Smith\'s account...');">
+                                            <i data-feather="trash-2" class="w-4 h-4"></i>
+                                        </button>
+                                        <button class="text-green-600 hover:text-green-800 mr-3" onclick="emailQRCode('jane.smith@college.ac.in', '12346')">
+                                            <i data-feather="mail" class="w-4 h-4"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow p-6">
+                    <h3 class="text-lg font-semibold mb-4">Add New Student</h3>
+                    <form onsubmit="event.preventDefault(); addNewStudent();" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-neutral-700 mb-2">Full Name</label>
+                            <input type="text" id="new-student-name" class="w-full px-4 py-2 rounded-lg border border-neutral-300 focus:outline-none focus:ring-2 focus:ring-sky-500" required>
+                        </div>
+                        <div>
+                            <label class="block text-neutral-700 mb-2">PRN / Roll No.</label>
+                            <input type="text" id="new-student-prn" class="w-full px-4 py-2 rounded-lg border border-neutral-300 focus:outline-none focus:ring-2 focus:ring-sky-500" required>
+                        </div>
+                        <div>
+                            <label class="block text-neutral-700 mb-2">Email</label>
+                            <input type="email" id="new-student-email" class="w-full px-4 py-2 rounded-lg border border-neutral-300 focus:outline-none focus:ring-2 focus:ring-sky-500" required>
+                        </div>
+                        <div>
+                            <label class="block text-neutral-700 mb-2">Academic Year</label>
+                            <select id="new-student-year" class="w-full px-4 py-2 rounded-lg border border-neutral-300 focus:outline-none focus:ring-2 focus:ring-sky-500" required>
+                                <option value="">Select Year</option>
+                                <option>First</option>
+                                <option>Second</option>
+                                <option>Third</option>
+                                <option>Final</option>
+                            </select>
+                        </div>
+                        <div class="md:col-span-2 flex space-x-4">
+                            <button type="submit" class="w-full bg-sky-600 text-white py-2 rounded-lg hover:bg-sky-700 transition duration-200 flex items-center justify-center">
+                                <i data-feather="user-plus" class="mr-2"></i> Add Student
+                            </button>
+                            <button type="button" onclick="generateNewQRCodeForStudent()" class="w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 transition duration-200 flex items-center justify-center">
+                                <i data-feather="qr-code" class="mr-2"></i> Generate QR Code
+                            </button>
+                        </div>
+                    </form>
+                    <div id="new-student-qrcode" class="mt-8 hidden">
+                        <h4 class="text-lg font-semibold mb-2">Generated QR Code</h4>
+                        <div id="qrcode-container" class="w-32 h-32 p-2 border border-neutral-300 rounded-lg"></div>
+                        <p class="text-sm text-neutral-500 mt-2">Generated for the last student added.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="logout-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-xl shadow-2xl p-6 w-full max-w-sm">
+            <h3 class="text-xl font-bold text-neutral-800 mb-4">Confirm Logout</h3>
+            <p class="text-neutral-600 mb-6">Are you sure you want to log out of your SmartQR Attendance account?</p>
+            <div class="flex justify-end space-x-3">
+                <button onclick="closeModal('logout-modal')" class="bg-neutral-200 text-neutral-800 px-4 py-2 rounded-lg hover:bg-neutral-300 transition duration-200">
+                    Cancel
+                </button>
+                <button onclick="confirmLogout()" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition duration-200 flex items-center">
+                    <i data-feather="log-out" class="w-4 h-4 mr-1 inline-block"></i> Yes, Logout
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        feather.replace();
+        
+        function showLogoutModal() {
+            document.getElementById('logout-modal').classList.remove('hidden');
+            feather.replace();
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.add('hidden');
+        }
+
+        function confirmLogout() {
+            window.location.href = 'index.html';
+        }
+
+        function addNewStudent() {
+            const name = document.getElementById('new-student-name').value;
+            const prn = document.getElementById('new-student-prn').value;
+            const email = document.getElementById('new-student-email').value;
+            const year = document.getElementById('new-student-year').value;
+
+            if (name && prn && email && year) {
+                // Simulate adding a new row to the table
+                const tableBody = document.getElementById('student-roster-body');
+                const newRow = document.createElement('tr');
+                newRow.innerHTML = `
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-neutral-900">${prn}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-neutral-500">${name}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-neutral-500">${email}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-neutral-500">${year}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-neutral-500">
+                        <button class="text-sky-600 hover:text-sky-800 mr-3" onclick="alert('Viewing ${name}\'s profile');">
+                            <i data-feather="eye" class="w-4 h-4"></i>
+                        </button>
+                        <button class="text-yellow-600 hover:text-yellow-800 mr-3" onclick="alert('Editing ${name}\'s profile');">
+                            <i data-feather="edit" class="w-4 h-4"></i>
+                        </button>
+                        <button class="text-red-600 hover:text-red-800" onclick="alert('Deleting ${name}\'s account...');">
+                            <i data-feather="trash-2" class="w-4 h-4"></i>
+                        </button>
+                        <button class="text-green-600 hover:text-green-800 mr-3" onclick="emailQRCode('${email}', '${prn}')">
+                            <i data-feather="mail" class="w-4 h-4"></i>
+                        </button>
+                    </td>
+                `;
+                tableBody.appendChild(newRow);
+                feather.replace();
+                alert(`New student added:\nName: ${name}\nPRN: ${prn}`);
+                
+                // Clear the form fields
+                document.getElementById('new-student-name').value = '';
+                document.getElementById('new-student-prn').value = '';
+                document.getElementById('new-student-email').value = '';
+                document.getElementById('new-student-year').value = '';
+
+            } else {
+                alert('Please fill out all fields.');
+            }
+        }
+
+        function generateNewQRCodeForStudent() {
+            const prn = document.getElementById('new-student-prn').value;
+            if (prn) {
+                document.getElementById('new-student-qrcode').classList.remove('hidden');
+                document.getElementById('qrcode-container').innerHTML = '';
+                new QRCode(document.getElementById('qrcode-container'), {
+                    text: prn,
+                    width: 120,
+                    height: 120
+                });
+                alert('QR Code generated for new student!');
+            } else {
+                alert('Please enter a PRN / Roll No. to generate a QR code.');
+            }
+        }
+        
+        function generateAllQRCodes() {
+            const tableBody = document.getElementById('student-roster-body');
+            const students = tableBody.getElementsByTagName('tr');
+            let qrCodesGenerated = 0;
+            
+            for (let i = 0; i < students.length; i++) {
+                const prn = students[i].cells[0].textContent;
+                // In a real application, this would call a backend function to generate a QR code
+                // and store it. Here, we just simulate the process.
+                qrCodesGenerated++;
+            }
+            alert(`Generated QR codes for all ${qrCodesGenerated} students.`);
+        }
+        
+        function emailQRCode(email, prn) {
+            alert(`Simulating sending QR code for PRN ${prn} to email: ${email}`);
+        }
+    </script>
+</body>
+</html>

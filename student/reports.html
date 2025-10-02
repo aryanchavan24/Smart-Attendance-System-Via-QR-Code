@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Reports</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .sidebar {
+            transition: all 0.3s ease;
+        }
+    </style>
+</head>
+<body class="bg-neutral-50 font-sans">
+    <div class="min-h-screen">
+        <div class="flex">
+            <div class="sidebar w-64 bg-sky-800 text-white min-h-screen p-4">
+                <div class="flex items-center mb-8">
+                    <div class="w-10 h-10 rounded-full bg-sky-600 flex items-center justify-center mr-3">
+                        <i data-feather="user"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-medium">John Doe</h3>
+                        <p class="text-xs text-sky-200">Student</p>
+                    </div>
+                </div>
+                <nav>
+                    <a href="student.html" class="flex items-center py-2 px-3 rounded-lg hover:bg-sky-700 mb-2">
+                        <i data-feather="home" class="mr-3"></i> Dashboard
+                    </a>
+                    <a href="attendance.html" class="flex items-center py-2 px-3 rounded-lg hover:bg-sky-700 mb-2">
+                        <i data-feather="calendar" class="mr-3"></i> Attendance
+                    </a>
+                    <a href="reports.html" class="flex items-center py-2 px-3 rounded-lg bg-sky-700 mb-2">
+                        <i data-feather="bar-chart-2" class="mr-3"></i> Reports
+                    </a>
+                    <a href="profile.html" class="flex items-center py-2 px-3 rounded-lg hover:bg-sky-700 mb-2">
+                        <i data-feather="user" class="mr-3"></i> Profile & QR Code
+                    </a>
+                    <a href="settings.html" class="flex items-center py-2 px-3 rounded-lg hover:bg-sky-700 mb-2">
+                        <i data-feather="settings" class="mr-3"></i> Settings
+                    </a>
+                </nav>
+            </div>
+
+            <div class="flex-1 p-8">
+                <div class="flex justify-between items-center mb-8">
+                    <h2 class="text-2xl font-bold text-neutral-800">Reports</h2>
+                    <button class="bg-sky-600 text-white px-4 py-2 rounded-lg hover:bg-sky-700 transition duration-200 flex items-center" onclick="window.location.href='index.html'">
+                        <i data-feather="log-out" class="mr-2"></i> Logout
+                    </button>
+                </div>
+
+                <div class="bg-white rounded-xl shadow p-6 mb-8">
+                    <h3 class="text-xl font-semibold mb-4">Attendance Trend Over Time</h3>
+                    <canvas id="attendanceTrendChart"></canvas>
+                </div>
+
+                <div class="bg-white rounded-xl shadow p-6 mb-8">
+                    <h3 class="text-xl font-semibold mb-4">Performance vs. Attendance</h3>
+                    <canvas id="performanceChart"></canvas>
+                    <p class="mt-4 text-center text-sm text-neutral-500">
+                        Higher on the chart means better attendance. Further to the right means better performance.
+                    </p>
+                </div>
+
+                <div class="bg-white rounded-xl shadow p-6 mb-8">
+                    <h3 class="text-xl font-semibold mb-4">Subject-wise Performance Summary</h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left table-auto">
+                            <thead>
+                                <tr class="bg-neutral-100 text-neutral-600">
+                                    <th class="p-3 font-semibold">Course Name</th>
+                                    <th class="p-3 font-semibold">Current Attendance</th>
+                                    <th class="p-3 font-semibold">Last Test Score</th>
+                                    <th class="p-3 font-semibold">Predicted Grade</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="border-b border-neutral-200">
+                                    <td class="p-3">Data Structures & Algorithms</td>
+                                    <td class="p-3">83.3%</td>
+                                    <td class="p-3">85%</td>
+                                    <td class="p-3"><span class="text-green-600 font-semibold">A</span></td>
+                                </tr>
+                                <tr class="border-b border-neutral-200 bg-neutral-50">
+                                    <td class="p-3">Operating Systems</td>
+                                    <td class="p-3">60.0%</td>
+                                    <td class="p-3">55%</td>
+                                    <td class="p-3"><span class="text-red-600 font-semibold">C</span></td>
+                                </tr>
+                                <tr class="border-b border-neutral-200">
+                                    <td class="p-3">Software Engineering</td>
+                                    <td class="p-3">80.0%</td>
+                                    <td class="p-3">92%</td>
+                                    <td class="p-3"><span class="text-green-600 font-semibold">A+</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow p-6">
+                    <h3 class="text-xl font-semibold mb-4">Actionable Insights</h3>
+                    <div class="space-y-4">
+                        <div class="p-4 bg-yellow-50 rounded-lg border-l-4 border-yellow-500 flex items-start">
+                            <i data-feather="alert-triangle" class="w-6 h-6 text-yellow-500 flex-shrink-0 mr-3"></i>
+                            <div>
+                                <p class="font-semibold text-yellow-800">Warning: Low Attendance in Operating Systems</p>
+                                <p class="text-sm text-neutral-600 mt-1">Your attendance is currently at 60%, below the required 75%. Attending the next 4 classes is crucial to meet the criteria.</p>
+                            </div>
+                        </div>
+                        <div class="p-4 bg-blue-50 rounded-lg border-l-4 border-blue-500 flex items-start">
+                            <i data-feather="check-circle" class="w-6 h-6 text-blue-500 flex-shrink-0 mr-3"></i>
+                            <div>
+                                <p class="font-semibold text-blue-800">Tip: Focus on Wednesday Classes</p>
+                                <p class="text-sm text-neutral-600 mt-1">Our analysis shows your attendance is lowest on Wednesdays. Setting a reminder might help you improve your overall percentage.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <script>
+        feather.replace();
+
+        // Attendance Trend Chart
+        const trendCtx = document.getElementById('attendanceTrendChart').getContext('2d');
+        const attendanceTrendChart = new Chart(trendCtx, {
+            type: 'line',
+            data: {
+                labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5', 'Week 6', 'Week 7'],
+                datasets: [{
+                    label: 'Attendance Percentage',
+                    data: [85, 90, 88, 75, 82, 70, 80],
+                    borderColor: '#0ea5e9',
+                    backgroundColor: 'rgba(14, 165, 233, 0.2)',
+                    tension: 0.4,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        min: 50,
+                        max: 100,
+                        ticks: {
+                            callback: function(value) {
+                                return value + '%';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Performance vs. Attendance Chart (Scatter Plot)
+        const performanceCtx = document.getElementById('performanceChart').getContext('2d');
+        const performanceChart = new Chart(performanceCtx, {
+            type: 'scatter',
+            data: {
+                datasets: [{
+                    label: 'Data Structures & Algorithms',
+                    data: [{x: 83.3, y: 85}],
+                    backgroundColor: '#0ea5e9'
+                }, {
+                    label: 'Operating Systems',
+                    data: [{x: 60, y: 55}],
+                    backgroundColor: '#ef4444'
+                }, {
+                    label: 'Software Engineering',
+                    data: [{x: 80, y: 92}],
+                    backgroundColor: '#10b981'
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Attendance Percentage (%)'
+                        },
+                        min: 50,
+                        max: 100
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Last Test Score (%)'
+                        },
+                        min: 50,
+                        max: 100
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+<div id="logout-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-xl shadow-2xl p-6 w-full max-w-sm">
+        <h3 class="text-xl font-bold text-neutral-800 mb-4">Confirm Logout</h3>
+        <p class="text-neutral-600 mb-6">Are you sure you want to log out of your SmartQR Attendance account?</p>
+        <div class="flex justify-end space-x-3">
+            <button onclick="closeModal('logout-modal')" class="bg-neutral-200 text-neutral-800 px-4 py-2 rounded-lg hover:bg-neutral-300 transition duration-200">
+                Cancel
+            </button>
+            <button onclick="confirmLogout()" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition duration-200 flex items-center">
+                <i data-feather="log-out" class="w-4 h-4 mr-1 inline-block"></i> Yes, Logout
+            </button>
+        </div>
+    </div>
+</div>
+</html>

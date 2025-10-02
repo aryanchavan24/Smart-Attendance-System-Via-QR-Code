@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Profile & QR Code</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+    <style>
+        .sidebar {
+            transition: all 0.3s ease;
+        }
+        .snackbar {
+            visibility: hidden;
+            min-width: 250px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 2px;
+            padding: 16px;
+            position: fixed;
+            z-index: 1;
+            left: 50%;
+            bottom: 30px;
+            transform: translateX(-50%);
+            font-size: 17px;
+        }
+        .snackbar.show {
+            visibility: visible;
+            -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+            animation: fadein 0.5s, fadeout 0.5s 2.5s;
+        }
+        @-webkit-keyframes fadein {
+            from {bottom: 0; opacity: 0;} 
+            to {bottom: 30px; opacity: 1;}
+        }
+        @keyframes fadein {
+            from {bottom: 0; opacity: 0;}
+            to {bottom: 30px; opacity: 1;}
+        }
+        @-webkit-keyframes fadeout {
+            from {bottom: 30px; opacity: 1;} 
+            to {bottom: 0; opacity: 0;}
+        }
+        @keyframes fadeout {
+            from {bottom: 30px; opacity: 1;}
+            to {bottom: 0; opacity: 0;}
+        }
+    </style>
+</head>
+<body class="bg-neutral-50 font-sans">
+    <div class="min-h-screen">
+        <div class="flex">
+            <div class="sidebar w-64 bg-sky-800 text-white min-h-screen p-4">
+                <div class="flex items-center mb-8">
+                    <div class="w-10 h-10 rounded-full bg-sky-600 flex items-center justify-center mr-3">
+                        <i data-feather="user"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-medium">John Doe</h3>
+                        <p class="text-xs text-sky-200">Student</p>
+                    </div>
+                </div>
+                <nav>
+                    <a href="student.html" class="flex items-center py-2 px-3 rounded-lg hover:bg-sky-700 mb-2">
+                        <i data-feather="home" class="mr-3"></i> Dashboard
+                    </a>
+                    <a href="attendance.html" class="flex items-center py-2 px-3 rounded-lg hover:bg-sky-700 mb-2">
+                        <i data-feather="calendar" class="mr-3"></i> Attendance
+                    </a>
+                    <a href="reports.html" class="flex items-center py-2 px-3 rounded-lg hover:bg-sky-700 mb-2">
+                        <i data-feather="bar-chart-2" class="mr-3"></i> Reports
+                    </a>
+                    <a href="profile.html" class="flex items-center py-2 px-3 rounded-lg bg-sky-700 mb-2">
+                        <i data-feather="user" class="mr-3"></i> Profile & QR Code
+                    </a>
+                    <a href="settings.html" class="flex items-center py-2 px-3 rounded-lg hover:bg-sky-700 mb-2">
+                        <i data-feather="settings" class="mr-3"></i> Settings
+                    </a>
+                </nav>
+            </div>
+
+            <div class="flex-1 p-8">
+                <div class="flex justify-between items-center mb-8">
+                    <h2 class="text-2xl font-bold text-neutral-800">Profile & QR Code</h2>
+                    <button class="bg-sky-600 text-white px-4 py-2 rounded-lg hover:bg-sky-700 transition duration-200 flex items-center" onclick="window.location.href='index.html'">
+                        <i data-feather="log-out" class="mr-2"></i> Logout
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="lg:col-span-2 bg-white rounded-xl shadow p-6">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-xl font-semibold">Profile Information</h3>
+                            <button id="edit-profile-btn" class="bg-sky-50 text-sky-600 px-4 py-2 rounded-lg hover:bg-sky-100 transition duration-200 flex items-center">
+                                <i data-feather="edit-3" class="w-4 h-4 mr-2"></i> Edit Profile
+                            </button>
+                            <button id="save-profile-btn" class="hidden bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition duration-200 flex items-center">
+                                <i data-feather="save" class="w-4 h-4 mr-2"></i> Save Changes
+                            </button>
+                        </div>
+                        
+                        <div class="flex items-center mb-6">
+                            <div class="w-24 h-24 rounded-full overflow-hidden mr-6 relative">
+                                <img id="profile-avatar" src="https://placehold.co/100x100?text=JD" alt="Profile Avatar" class="w-full h-full object-cover">
+                                <input type="file" id="avatar-upload" class="hidden">
+                                <label for="avatar-upload" class="absolute bottom-1 right-1 bg-white p-1 rounded-full shadow-md cursor-pointer hover:bg-neutral-100 transition duration-200">
+                                    <i data-feather="camera" class="w-4 h-4 text-neutral-600"></i>
+                                </label>
+                            </div>
+                            <div>
+                                <h4 class="text-2xl font-semibold" id="profile-name-display">John Doe</h4>
+                                <p class="text-sm text-neutral-500" id="profile-role-display">Student</p>
+                            </div>
+                        </div>
+
+                        <div class="space-y-4">
+                            <div>
+                                <p class="text-neutral-500">Full Name</p>
+                                <input id="profile-name-input" type="text" value="John Doe" class="w-full mt-1 p-2 rounded-lg border border-neutral-300 focus:outline-none focus:ring-2 focus:ring-sky-500 bg-neutral-100 cursor-not-allowed" readonly>
+                            </div>
+                            <div>
+                                <p class="text-neutral-500">Email Address</p>
+                                <input id="profile-email-input" type="email" value="john.doe@example.ac.in" class="w-full mt-1 p-2 rounded-lg border border-neutral-300 focus:outline-none focus:ring-2 focus:ring-sky-500 bg-neutral-100 cursor-not-allowed" readonly>
+                            </div>
+                            <div>
+                                <p class="text-neutral-500">PRN / Roll No.</p>
+                                <input id="profile-prn-input" type="text" value="PRN12345" class="w-full mt-1 p-2 rounded-lg border border-neutral-300 focus:outline-none focus:ring-2 focus:ring-sky-500 bg-neutral-100 cursor-not-allowed" readonly>
+                            </div>
+                            <div>
+                                <p class="text-neutral-500">Academic Year</p>
+                                <select id="profile-year-input" class="w-full mt-1 p-2 rounded-lg border border-neutral-300 focus:outline-none focus:ring-2 focus:ring-sky-500 bg-neutral-100 cursor-not-allowed" disabled>
+                                    <option value="First">First</option>
+                                    <option value="Second" selected>Second</option>
+                                    <option value="Third">Third</option>
+                                    <option value="Final">Final</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow p-6 flex flex-col items-center justify-center">
+                        <h3 class="text-xl font-semibold mb-4 text-center">Your Personal QR Code</h3>
+                        <div id="qrcode" class="w-48 h-48 border-2 border-sky-200 rounded-lg p-2 mb-4 flex items-center justify-center"></div>
+                        
+                        <button id="download-qr-btn" class="w-full bg-sky-600 text-white px-4 py-2 rounded-lg hover:bg-sky-700 transition duration-200 flex items-center justify-center mb-2">
+                            <i data-feather="download" class="mr-2"></i> Download QR
+                        </button>
+                        <p class="text-center text-sm text-neutral-500">
+                            This QR is unique to your account.
+                        </p>
+                    </div>
+                </div>
+
+                <div id="snackbar" class="snackbar"></div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        feather.replace();
+
+        // Sample Data (replace with data from your backend)
+        const profileData = {
+            name: "John Doe",
+            role: "Student",
+            email: "john.doe@example.ac.in",
+            prn: "PRN12345",
+            academicYear: "Second",
+            avatar: "https://placehold.co/100x100?text=JD"
+        };
+
+        const profileElements = {
+            nameDisplay: document.getElementById('profile-name-display'),
+            roleDisplay: document.getElementById('profile-role-display'),
+            avatar: document.getElementById('profile-avatar'),
+            nameInput: document.getElementById('profile-name-input'),
+            emailInput: document.getElementById('profile-email-input'),
+            prnInput: document.getElementById('profile-prn-input'),
+            yearInput: document.getElementById('profile-year-input'),
+            editBtn: document.getElementById('edit-profile-btn'),
+            saveBtn: document.getElementById('save-profile-btn'),
+            avatarUpload: document.getElementById('avatar-upload'),
+            qrCodeDiv: document.getElementById('qrcode'),
+            downloadQrBtn: document.getElementById('download-qr-btn'),
+            snackbar: document.getElementById('snackbar')
+        };
+
+        // Function to show snackbar
+        function showSnackbar(message) {
+            profileElements.snackbar.textContent = message;
+            profileElements.snackbar.className = "snackbar show";
+            setTimeout(function(){ 
+                profileElements.snackbar.className = profileElements.snackbar.className.replace("show", ""); 
+            }, 3000);
+        }
+
+        // Function to render profile data
+        function renderProfile() {
+            profileElements.nameDisplay.textContent = profileData.name;
+            profileElements.roleDisplay.textContent = profileData.role;
+            profileElements.avatar.src = profileData.avatar;
+            profileElements.nameInput.value = profileData.name;
+            profileElements.emailInput.value = profileData.email;
+            profileElements.prnInput.value = profileData.prn;
+            profileElements.yearInput.value = profileData.academicYear;
+        }
+
+        // Function to generate and render QR Code
+        function generateQrCode() {
+            profileElements.qrCodeDiv.innerHTML = '';
+            new QRCode(profileElements.qrCodeDiv, {
+                text: profileData.prn,
+                width: 170,
+                height: 170
+            });
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', () => {
+            renderProfile();
+            generateQrCode();
+        });
+
+        // Edit/Save Profile Logic
+        profileElements.editBtn.addEventListener('click', () => {
+            const inputs = [profileElements.nameInput, profileElements.yearInput];
+            inputs.forEach(input => {
+                input.readOnly = false;
+                input.disabled = false;
+                input.classList.remove('bg-neutral-100', 'cursor-not-allowed');
+                input.classList.add('bg-white');
+            });
+            profileElements.editBtn.classList.add('hidden');
+            profileElements.saveBtn.classList.remove('hidden');
+        });
+
+        profileElements.saveBtn.addEventListener('click', () => {
+            // Update profileData with new values
+            profileData.name = profileElements.nameInput.value;
+            profileData.academicYear = profileElements.yearInput.value;
+            
+            // Re-render profile with updated data
+            renderProfile();
+            generateQrCode();
+            showSnackbar("Profile updated successfully!");
+
+            // Revert inputs back to read-only state
+            const inputs = [profileElements.nameInput, profileElements.yearInput];
+            inputs.forEach(input => {
+                input.readOnly = true;
+                input.disabled = true;
+                input.classList.add('bg-neutral-100', 'cursor-not-allowed');
+                input.classList.remove('bg-white');
+            });
+            profileElements.editBtn.classList.remove('hidden');
+            profileElements.saveBtn.classList.add('hidden');
+        });
+
+        // Avatar Upload Logic
+        profileElements.avatarUpload.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    profileData.avatar = e.target.result;
+                    profileElements.avatar.src = profileData.avatar;
+                    showSnackbar("Avatar changed successfully!");
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // QR Code Download Logic
+        profileElements.downloadQrBtn.addEventListener('click', () => {
+            const canvas = profileElements.qrCodeDiv.querySelector('canvas');
+            if (canvas) {
+                const url = canvas.toDataURL("image/png");
+                const link = document.createElement('a');
+                link.download = `${profileData.prn}_qrcode.png`;
+                link.href = url;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                showSnackbar("QR Code downloaded!");
+            }
+        });
+    </script>
+</body>
+<div id="logout-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-xl shadow-2xl p-6 w-full max-w-sm">
+        <h3 class="text-xl font-bold text-neutral-800 mb-4">Confirm Logout</h3>
+        <p class="text-neutral-600 mb-6">Are you sure you want to log out of your SmartQR Attendance account?</p>
+        <div class="flex justify-end space-x-3">
+            <button onclick="closeModal('logout-modal')" class="bg-neutral-200 text-neutral-800 px-4 py-2 rounded-lg hover:bg-neutral-300 transition duration-200">
+                Cancel
+            </button>
+            <button onclick="confirmLogout()" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition duration-200 flex items-center">
+                <i data-feather="log-out" class="w-4 h-4 mr-1 inline-block"></i> Yes, Logout
+            </button>
+        </div>
+    </div>
+</div>
+</html>

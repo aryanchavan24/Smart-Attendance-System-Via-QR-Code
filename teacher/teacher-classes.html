@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Classes | Teacher Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .sidebar {
+            transition: all 0.3s ease;
+        }
+    </style>
+</head>
+<body class="bg-neutral-50 font-sans">
+    <div class="min-h-screen">
+        <div class="flex">
+            <div class="sidebar w-64 bg-sky-800 text-white min-h-screen p-4">
+                <div class="flex items-center mb-8">
+                    <div class="w-10 h-10 rounded-full bg-sky-600 flex items-center justify-center mr-3">
+                        <i data-feather="user"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-medium">Prof. Smith</h3>
+                        <p class="text-xs text-sky-200">Teacher</p>
+                    </div>
+                </div>
+                <nav>
+                    <a href="teacher.html" class="flex items-center py-2 px-3 rounded-lg hover:bg-sky-700 mb-2">
+                        <i data-feather="home" class="mr-3"></i> Dashboard
+                    </a>
+                    <a href="teacher-scanner.html" class="flex items-center py-2 px-3 rounded-lg hover:bg-sky-700 mb-2">
+                        <i data-feather="maximize-2" class="mr-3"></i> QR Scanner
+                    </a>
+                    <a href="teacher-timetable.html" class="flex items-center py-2 px-3 rounded-lg hover:bg-sky-700 mb-2">
+                        <i data-feather="calendar" class="mr-3"></i> Timetable
+                    </a>
+                    <a href="teacher-classes.html" class="flex items-center py-2 px-3 rounded-lg bg-sky-700 mb-2">
+                        <i data-feather="users" class="mr-3"></i> My Classes
+                    </a>
+                    <a href="teacher-reports.html" class="flex items-center py-2 px-3 rounded-lg hover:bg-sky-700 mb-2">
+                        <i data-feather="bar-chart-2" class="mr-3"></i> Reports
+                    </a>
+                    <a href="teacher-notifications.html" class="flex items-center py-2 px-3 rounded-lg hover:bg-sky-700 mb-2">
+                        <i data-feather="mail" class="mr-3"></i> Notifications
+                    </a>
+                </nav>
+            </div>
+            
+            <div class="flex-1 p-8">
+                <div class="flex justify-between items-center mb-8">
+                    <h2 class="text-2xl font-bold text-neutral-800">My Classes</h2>
+                    <button class="bg-sky-600 text-white px-4 py-2 rounded-lg hover:bg-sky-700 transition duration-200 flex items-center" onclick="showLogoutModal()">
+                        <i data-feather="log-out" class="mr-2"></i> Logout
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <div class="bg-white rounded-xl shadow p-6 text-center">
+                        <p class="text-neutral-500">Total Classes</p>
+                        <h3 class="text-3xl font-bold text-sky-700 mt-2">3</h3>
+                    </div>
+                    <div class="bg-white rounded-xl shadow p-6 text-center">
+                        <p class="text-neutral-500">Total Students</p>
+                        <h3 class="text-3xl font-bold text-sky-700 mt-2">125</h3>
+                    </div>
+                    <div class="bg-white rounded-xl shadow p-6 text-center">
+                        <p class="text-neutral-500">Overall Attendance</p>
+                        <canvas id="overallAttendancePie" class="mx-auto" style="max-height: 100px; max-width: 100px;"></canvas>
+                        <h3 class="text-lg font-bold text-neutral-800 mt-2">82%</h3>
+                    </div>
+                    <div class="bg-white rounded-xl shadow p-6 text-center">
+                        <p class="text-neutral-500">Classes to Start Today</p>
+                        <h3 class="text-3xl font-bold text-green-600 mt-2">1</h3>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow p-6">
+                    <h3 class="text-lg font-semibold mb-4">Class Roster</h3>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-neutral-200">
+                            <thead class="bg-neutral-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">Class Name</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">Batch</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">Students</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">Attendance %</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-neutral-200">
+                                <tr data-class-name="Data Structures & Algorithms" data-batch="FY-B.Tech-A" data-students="45" data-attendance="85">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-neutral-900">Data Structures & Algorithms</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-neutral-500">FY-B.Tech-A</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-neutral-500">45</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-neutral-500">
+                                        <div class="w-full bg-neutral-200 rounded-full h-2.5">
+                                            <div class="bg-green-600 h-2.5 rounded-full" style="width: 85%"></div>
+                                        </div>
+                                        <span class="text-xs">85%</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-neutral-500">
+                                        <button class="text-sky-600 hover:text-sky-800 mr-3" onclick="viewClassAttendance('Data Structures & Algorithms', 'FY-B.Tech-A');">
+                                            <i data-feather="calendar" class="w-4 h-4"></i>
+                                        </button>
+                                        <button class="text-indigo-600 hover:text-indigo-800" onclick="alert('Generating report for Data Structures');">
+                                            <i data-feather="bar-chart" class="w-4 h-4"></i>
+                                        </button>
+                                        <button class="text-green-600 hover:text-green-800 ml-3" onclick="alert('Marking all students in Data Structures as present...');">
+                                            <i data-feather="check-circle" class="w-4 h-4"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr data-class-name="Algorithms" data-batch="SY-B.Tech-B" data-students="38" data-attendance="72">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-neutral-900">Algorithms</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-neutral-500">SY-B.Tech-B</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-neutral-500">38</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-neutral-500">
+                                        <div class="w-full bg-neutral-200 rounded-full h-2.5">
+                                            <div class="bg-yellow-500 h-2.5 rounded-full" style="width: 72%"></div>
+                                        </div>
+                                        <span class="text-xs">72%</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-neutral-500">
+                                        <button class="text-sky-600 hover:text-sky-800 mr-3" onclick="viewClassAttendance('Algorithms', 'SY-B.Tech-B');">
+                                            <i data-feather="calendar" class="w-4 h-4"></i>
+                                        </button>
+                                        <button class="text-indigo-600 hover:text-indigo-800" onclick="alert('Generating report for Algorithms');">
+                                            <i data-feather="bar-chart" class="w-4 h-4"></i>
+                                        </button>
+                                        <button class="text-green-600 hover:text-green-800 ml-3" onclick="alert('Marking all students in Algorithms as present...');">
+                                            <i data-feather="check-circle" class="w-4 h-4"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr data-class-name="Database Systems" data-batch="TY-B.Tech-C" data-students="42" data-attendance="90">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-neutral-900">Database Systems</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-neutral-500">TY-B.Tech-C</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-neutral-500">42</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-neutral-500">
+                                        <div class="w-full bg-neutral-200 rounded-full h-2.5">
+                                            <div class="bg-green-600 h-2.5 rounded-full" style="width: 90%"></div>
+                                        </div>
+                                        <span class="text-xs">90%</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-neutral-500">
+                                        <button class="text-sky-600 hover:text-sky-800 mr-3" onclick="viewClassAttendance('Database Systems', 'TY-B.Tech-C');">
+                                            <i data-feather="calendar" class="w-4 h-4"></i>
+                                        </button>
+                                        <button class="text-indigo-600 hover:text-indigo-800" onclick="alert('Generating report for Database Systems');">
+                                            <i data-feather="bar-chart" class="w-4 h-4"></i>
+                                        </button>
+                                        <button class="text-green-600 hover:text-green-800 ml-3" onclick="alert('Marking all students in Database Systems as present...');">
+                                            <i data-feather="check-circle" class="w-4 h-4"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="logout-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-xl shadow-2xl p-6 w-full max-w-sm">
+            <h3 class="text-xl font-bold text-neutral-800 mb-4">Confirm Logout</h3>
+            <p class="text-neutral-600 mb-6">Are you sure you want to log out of your SmartQR Attendance account?</p>
+            <div class="flex justify-end space-x-3">
+                <button onclick="closeModal('logout-modal')" class="bg-neutral-200 text-neutral-800 px-4 py-2 rounded-lg hover:bg-neutral-300 transition duration-200">
+                    Cancel
+                </button>
+                <button onclick="confirmLogout()" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition duration-200 flex items-center">
+                    <i data-feather="log-out" class="w-4 h-4 mr-1 inline-block"></i> Yes, Logout
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="attendance-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-xl shadow-2xl p-6 w-full max-w-2xl max-h-screen overflow-y-auto">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold text-neutral-800" id="attendance-modal-title">Attendance for Class</h3>
+                <button onclick="closeModal('attendance-modal')" class="text-neutral-500 hover:text-neutral-800 transition duration-200">
+                    <i data-feather="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+            <div class="mb-4">
+                <p class="text-neutral-600">Students in <span id="modal-class-name" class="font-medium"></span> (<span id="modal-batch-name"></span>)</p>
+            </div>
+            <div class="flex justify-between items-center mb-4">
+                <div class="flex space-x-2">
+                    <button onclick="filterStudents('all')" class="px-3 py-1 rounded-lg text-sm bg-neutral-200 text-neutral-800 hover:bg-neutral-300 transition duration-200">All</button>
+                    <button onclick="filterStudents('present')" class="px-3 py-1 rounded-lg text-sm bg-green-100 text-green-800 hover:bg-green-200 transition duration-200">Present</button>
+                    <button onclick="filterStudents('absent')" class="px-3 py-1 rounded-lg text-sm bg-red-100 text-red-800 hover:bg-red-200 transition duration-200">Absent</button>
+                </div>
+            </div>
+            <div class="space-y-3 max-h-96 overflow-y-auto pr-4">
+                <div id="student-list">
+                    </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        feather.replace();
+
+        function showLogoutModal() {
+            document.getElementById('logout-modal').classList.remove('hidden');
+            feather.replace();
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.add('hidden');
+        }
+
+        function confirmLogout() {
+            window.location.href = 'index.html';
+        }
+
+        // Dummy data for pie chart
+        const pieData = {
+            labels: ['Present', 'Absent', 'Pending'],
+            datasets: [{
+                data: [82, 12, 6],
+                backgroundColor: ['#10b981', '#ef4444', '#f59e0b'],
+                borderColor: '#ffffff',
+                borderWidth: 2,
+            }]
+        };
+
+        const pieOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '80%',
+            plugins: {
+                legend: {
+                    display: false,
+                },
+                tooltip: {
+                    enabled: true,
+                }
+            }
+        };
+        
+        new Chart(document.getElementById('overallAttendancePie'), {
+            type: 'doughnut',
+            data: pieData,
+            options: pieOptions,
+        });
+
+        // Dummy data for students in a class
+        const classStudents = {
+            "Data Structures & Algorithms": [
+                { name: "John Doe", prn: "12345", status: "Present" },
+                { name: "Jane Smith", prn: "12346", status: "Present" },
+                { name: "Bob Johnson", prn: "12347", status: "Absent" },
+                { name: "Alice Williams", prn: "12348", status: "Present" },
+                { name: "Mike Davis", prn: "12349", status: "Present" },
+                { name: "Emily Wilson", prn: "12350", status: "Present" },
+                { name: "David Miller", prn: "12351", status: "Absent" },
+            ],
+            "Algorithms": [
+                { name: "Ben Turner", prn: "23451", status: "Present" },
+                { name: "Chloe King", prn: "23452", status: "Present" },
+                { name: "Noah Evans", prn: "23453", status: "Present" },
+                { name: "Olivia Green", prn: "23454", status: "Absent" },
+            ],
+        };
+
+        function viewClassAttendance(className, batchName) {
+            const modalTitle = document.getElementById('attendance-modal-title');
+            const modalClassName = document.getElementById('modal-class-name');
+            const modalBatchName = document.getElementById('modal-batch-name');
+            const studentList = document.getElementById('student-list');
+            
+            modalTitle.textContent = `Attendance for ${className}`;
+            modalClassName.textContent = className;
+            modalBatchName.textContent = batchName;
+            
+            studentList.innerHTML = '';
+            
+            const students = classStudents[className] || [];
+            
+            students.forEach(student => {
+                const newEntry = document.createElement('div');
+                const statusColor = student.status === 'Present' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800';
+                const statusIcon = student.status === 'Present' ? 'check-circle' : 'x-circle';
+
+                newEntry.className = `flex items-center p-3 rounded-lg border border-neutral-200`;
+                newEntry.dataset.status = student.status.toLowerCase();
+                newEntry.innerHTML = `
+                    <div class="w-8 h-8 rounded-full bg-sky-100 flex items-center justify-center mr-3">
+                        <i data-feather="user" class="text-sky-600 w-4 h-4"></i>
+                    </div>
+                    <div class="flex-1">
+                        <p class="font-medium">${student.name}</p>
+                        <p class="text-xs text-neutral-500">PRN: ${student.prn}</p>
+                    </div>
+                    <span id="status-${student.prn}" class="flex items-center text-sm font-medium ${student.status === 'Present' ? 'text-green-600' : 'text-red-600'}">
+                        <i data-feather="${statusIcon}" class="w-4 h-4 mr-1"></i>
+                        ${student.status}
+                    </span>
+                    <button onclick="toggleAttendance('${student.prn}', '${className}')" class="ml-4 text-sky-600 hover:text-sky-800 transition duration-200 flex items-center text-sm">
+                        <i data-feather="edit-3" class="w-4 h-4 mr-1"></i> Edit
+                    </button>
+                `;
+                studentList.appendChild(newEntry);
+            });
+            
+            document.getElementById('attendance-modal').classList.remove('hidden');
+            feather.replace();
+        }
+
+        function toggleAttendance(prn, className) {
+            const studentEntry = classStudents[className].find(s => s.prn === prn);
+            if (studentEntry) {
+                if (studentEntry.status === 'Present') {
+                    studentEntry.status = 'Absent';
+                    alert(`Marked ${studentEntry.name} as Absent.`);
+                } else {
+                    studentEntry.status = 'Present';
+                    alert(`Marked ${studentEntry.name} as Present.`);
+                }
+                viewClassAttendance(className); // Refresh the modal
+            }
+        }
+
+        function filterStudents(status) {
+            const studentList = document.getElementById('student-list');
+            const students = studentList.children;
+            
+            for (let i = 0; i < students.length; i++) {
+                const student = students[i];
+                if (status === 'all') {
+                    student.style.display = 'flex';
+                } else {
+                    if (student.dataset.status === status) {
+                        student.style.display = 'flex';
+                    } else {
+                        student.style.display = 'none';
+                    }
+                }
+            }
+        }
+    </script>
+</body>
+</html>
